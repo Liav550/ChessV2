@@ -35,6 +35,8 @@ public abstract class Tile {
     public abstract boolean isTileOccupied();
     public abstract Piece getPiece();
 
+    public int getTileIndex(){return this.tileIndex;}
+
 
     public static final class EmptyTile extends Tile{
         private EmptyTile(int tileIndex){

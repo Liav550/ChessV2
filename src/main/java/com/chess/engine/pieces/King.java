@@ -4,7 +4,7 @@ import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
-import com.chess.engine.board.Move.AttackMove;
+import com.chess.engine.board.Move.MajorAttackMove;
 import com.chess.engine.board.Move.MajorMove;
 import com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
@@ -20,7 +20,10 @@ public class King extends Piece{
        // for example a king can go from tile 26 to tile 34 because 26+8=34.
        // NOTE: there are some exceptions to this rule, which will be handled
     public King(int piecePosition, Alliance alliance) {
-        super(PieceType.KING,piecePosition, alliance);
+        super(PieceType.KING,piecePosition, alliance,true);
+    }
+    public King(int piecePosition, Alliance alliance, boolean isFirstMove) {
+        super(PieceType.KING,piecePosition, alliance, isFirstMove);
     }
 
     @Override
@@ -48,7 +51,7 @@ public class King extends Piece{
             else{
                 pieceOnDestination = destinationTile.getPiece();
                 if(pieceOnDestination.pieceAlliance != this.pieceAlliance){
-                    legalMoves.add(new AttackMove(board,this,destinationIndex,pieceOnDestination));
+                    legalMoves.add(new MajorAttackMove(board,this,destinationIndex,pieceOnDestination));
                 }
             }
         }

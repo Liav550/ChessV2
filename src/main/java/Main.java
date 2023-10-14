@@ -1,6 +1,4 @@
-import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
-import com.chess.engine.pieces.Bishop;
 import com.chess.gui.Table;
 
 public class Main {

@@ -4,8 +4,8 @@ import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.MajorAttackMove;
 import com.chess.engine.board.Move.MajorMove;
-import com.chess.engine.board.Move.AttackMove;
 import com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
@@ -21,7 +21,10 @@ public class Knight extends Piece{
             // NOTE: there are some exceptions to this rule, which will be handled
 
     public Knight(int piecePosition, Alliance alliance) {
-        super(PieceType.KNIGHT,piecePosition, alliance);
+        super(PieceType.KNIGHT,piecePosition, alliance,true);
+    }
+    public Knight(int piecePosition, Alliance alliance, boolean isFirstMove) {
+        super(PieceType.KNIGHT,piecePosition, alliance, isFirstMove);
     }
 
     @Override
@@ -51,7 +54,7 @@ public class Knight extends Piece{
                 pieceAtDestination = destinationTile.getPiece();
                 Alliance destinationPieceAlliance = pieceAtDestination.getPieceAlliance();
                 if(this.pieceAlliance != destinationPieceAlliance){
-                    legalMoves.add(new AttackMove(board,this,destinationIndex, pieceAtDestination));
+                    legalMoves.add(new MajorAttackMove(board,this,destinationIndex, pieceAtDestination));
                 }
             }
         }

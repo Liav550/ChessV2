@@ -4,8 +4,8 @@ import com.chess.engine.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
+import com.chess.engine.board.Move.MajorAttackMove;
 import com.chess.engine.board.Move.MajorMove;
-import com.chess.engine.board.Move.AttackMove;
 import com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
@@ -24,41 +24,44 @@ public class Bishop extends Piece{
           */
 
     public Bishop(int piecePosition, Alliance alliance) {
-        super(PieceType.BISHOP,piecePosition, alliance);
+        super(PieceType.BISHOP,piecePosition, alliance,true);
+    }
+    public Bishop(int piecePosition, Alliance alliance, boolean isFirstMove) {
+        super(PieceType.BISHOP,piecePosition, alliance, isFirstMove);
     }
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
-        int destinationIndex; // the index of the tile that the bishop can move to (if valid)
-        Tile destinationTile; // the tile of the destination
-        Piece pieceAtDestination; // the piece in the destination tile (if exists)
-        final List<Move> legalMoves = new ArrayList<>();
-        for(int offset: CANDIDATE_BISHOP_DIRECTION_OFFSETS){ // looping through all directions
+        List<Move> legalMoves = new ArrayList<>();
+        int candidateDestinationIndex;
+        Tile destinationTile;
+        Piece pieceOnDestinationTile;
+        for(int offset: CANDIDATE_BISHOP_DIRECTION_OFFSETS){
             if(isFirstColumnExclusion(this.piecePosition, offset) ||
-               isEighthColumnExclusion(this.piecePosition,offset)){ //if the current offset is an exclusion because
-                                                                    //of the bishop's position, move on to the next
-                                                                    //offset
+               isEighthColumnExclusion(this.piecePosition, offset)){
                 continue;
             }
-            destinationIndex = this.piecePosition + offset;
-            while(BoardUtils.isValidTileIndex(destinationIndex)){ // while we can go in the direction
-                                                                  // without getting out of bounds
-
-                destinationTile = board.getTile(destinationIndex);
+            candidateDestinationIndex = this.piecePosition + offset;
+            while(BoardUtils.isValidTileIndex(candidateDestinationIndex)){
+                destinationTile = board.getTile(candidateDestinationIndex);
                 if(!destinationTile.isTileOccupied()){
-                    legalMoves.add(new MajorMove(board,this,destinationIndex));
-                    destinationIndex += offset; // continue checking in that direction
+                    legalMoves.add(new MajorMove(board, this, candidateDestinationIndex));
+                    if(isFirstColumnExclusion(candidateDestinationIndex, offset) ||
+                            isEighthColumnExclusion(candidateDestinationIndex, offset)){
+                        break;
+                    }
+                    candidateDestinationIndex += offset;
                 }
                 else{
-                    pieceAtDestination = destinationTile.getPiece();
-                    Alliance destinationPieceAlliance = pieceAtDestination.getPieceAlliance();
-                    if(this.pieceAlliance != destinationPieceAlliance){
-                        legalMoves.add(new AttackMove(board,this,destinationIndex, pieceAtDestination));
+                    pieceOnDestinationTile = destinationTile.getPiece();
+                    if(this.pieceAlliance != pieceOnDestinationTile.getPieceAlliance()){
+                        legalMoves.add(new MajorAttackMove
+                                (board,this,candidateDestinationIndex,pieceOnDestinationTile));
                     }
-                    break; // because a piece blocks us, we can't continue checking in that direction
+                    break;
                 }
             }
         }
-        return ImmutableList.copyOf(legalMoves); // returns an immutable copy of the list
+        return ImmutableList.copyOf(legalMoves);
     }
 
     @Override
