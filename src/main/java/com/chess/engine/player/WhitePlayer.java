@@ -35,7 +35,7 @@ public class WhitePlayer extends Player{
     }
 
     @Override
-    protected Collection<Move> calculateKingCastles(Collection<Move> playerLegalMoves, Collection<Move> opponentsLegalMoves) {
+    protected Collection<Move> calculateKingCastles(Collection<Move> opponentsLegalMoves) {
         List<Move> kingCastles = new ArrayList<>();
         Tile rookTile;
         if(!this.playerKing.isFirstMove() || this.isInCheck()){

@@ -14,6 +14,11 @@ import java.util.Collection;
 import java.util.List;
 
 // Check out ChessBoardIndexes.png on resources for indexes!!!
+/**
+ * @author liavb
+ * The Bishop class represents the bishop piece.
+ */
+// TODO - YOU DOCUMENTED ME
 public class Bishop extends Piece{
     private static final int[] CANDIDATE_BISHOP_DIRECTION_OFFSETS = {-9,-7,7,9}; // explanation below
          /*
@@ -21,7 +26,7 @@ public class Bishop extends Piece{
             for example, a bishop can go from tile 35 to tile 62, because 35+9+9+9 = 62.
                          a bishop can go from tile 35 to tile 21 because 35-7-7 = 21
             NOTE: there are some exclusions to this rule, which will be handled
-          */
+         */
 
     public Bishop(int piecePosition, Alliance alliance) {
         super(PieceType.BISHOP,piecePosition, alliance,true);
@@ -34,34 +39,43 @@ public class Bishop extends Piece{
         List<Move> legalMoves = new ArrayList<>();
         int candidateDestinationIndex;
         Tile destinationTile;
-        Piece pieceOnDestinationTile;
-        for(int offset: CANDIDATE_BISHOP_DIRECTION_OFFSETS){
+        Piece pieceOnDestinationTile; // if exists
+        for(int offset: CANDIDATE_BISHOP_DIRECTION_OFFSETS){ // looping through all directions
             if(isFirstColumnExclusion(this.piecePosition, offset) ||
-               isEighthColumnExclusion(this.piecePosition, offset)){
+               isEighthColumnExclusion(this.piecePosition, offset)){ //if the current offset is an exclusion because
+                                                                     // of the bishop's position, move on to the
+                                                                     // next offset
                 continue;
             }
             candidateDestinationIndex = this.piecePosition + offset;
-            while(BoardUtils.isValidTileIndex(candidateDestinationIndex)){
+            while(BoardUtils.isValidTileIndex(candidateDestinationIndex)){ // while we can go in the direction
+                                                                           // without getting out of bounds
+
                 destinationTile = board.getTile(candidateDestinationIndex);
                 if(!destinationTile.isTileOccupied()){
                     legalMoves.add(new MajorMove(board, this, candidateDestinationIndex));
+                                                                                // if the tile is empty,
+                                                                                // we add a new normal move to the list
+
                     if(isFirstColumnExclusion(candidateDestinationIndex, offset) ||
                             isEighthColumnExclusion(candidateDestinationIndex, offset)){
-                        break;
+                        break; // if we got to the end of the diagonal, we can break and move on to the next offset.
                     }
-                    candidateDestinationIndex += offset;
+                    candidateDestinationIndex += offset; // continue checking in that direction
                 }
                 else{
+                    // now we know there is a piece standing on the destination tile.
                     pieceOnDestinationTile = destinationTile.getPiece();
                     if(this.pieceAlliance != pieceOnDestinationTile.getPieceAlliance()){
                         legalMoves.add(new MajorAttackMove
                                 (board,this,candidateDestinationIndex,pieceOnDestinationTile));
+                              // if the piece's color is not like the bishop's, we know it's an attacking/capturing move
                     }
-                    break;
+                    break;// because a piece blocks us, we can't continue checking in that direction
                 }
             }
         }
-        return ImmutableList.copyOf(legalMoves);
+        return ImmutableList.copyOf(legalMoves); // returns an immutable copy of the list
     }
 
     @Override

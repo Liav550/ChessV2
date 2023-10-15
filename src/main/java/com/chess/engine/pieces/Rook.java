@@ -14,6 +14,12 @@ import java.util.Collection;
 import java.util.List;
 
 // Check out ChessBoardIndexes.png on resources for indexes!!!
+
+/**
+ * @author liavb
+ * The Rook class represents the rook piece.
+ */
+// TODO - YOU DOCUMENTED ME
 public class Rook extends Piece{
     private static final int[] CANDIDATE_ROOK_DIRECTION_OFFSETS = {-8,-1,1,8}; // explanation below
           /*
@@ -30,39 +36,45 @@ public class Rook extends Piece{
     }
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
-        int candidateDestinationIndex;// the index of the tile that the rook can move to (if valid)
-        Tile destinationTile; // the tile of the destination
-        Piece pieceAtDestination; // the piece in the destination tile (if exists)
+        int candidateDestinationIndex;
+        Tile destinationTile;
+        Piece pieceAtDestination; // if exists
         final List<Move> legalMoves = new ArrayList<>();
-        for(int offset: CANDIDATE_ROOK_DIRECTION_OFFSETS){ // looping through all directions
+        for(int offset: CANDIDATE_ROOK_DIRECTION_OFFSETS){ // looping through all directions.
             if(isFirstColumnExclusion(this.piecePosition, offset) ||
                     isEighthColumnExclusion(this.piecePosition,offset)){ //if the current offset is an exclusion because
                                                                          // of the rook's position, move on to the
-                                                                         // next offset
+                                                                         // next offset.
                 continue;
             }
             candidateDestinationIndex = this.piecePosition + offset;
-            while(BoardUtils.isValidTileIndex(candidateDestinationIndex)){// while we can go in the direction
-                                                                 // without getting out of bounds
+            while(BoardUtils.isValidTileIndex(candidateDestinationIndex)){ // while we can go in the direction
+                                                                           // without getting out of bounds.
                 destinationTile = board.getTile(candidateDestinationIndex);
                 if(!destinationTile.isTileOccupied()){
                     legalMoves.add(new MajorMove(board,this,candidateDestinationIndex));
+                                                                                // if the tile is empty,
+                                                                                // we add a new normal move to the list.
+
                     if(isFirstColumnExclusion(candidateDestinationIndex, offset) ||
                             isEighthColumnExclusion(candidateDestinationIndex, offset)){
-                        break;
+                        break; // if we got to the end of the line, we can break and move on to the next offset.
                     }
                     candidateDestinationIndex += offset; // continue checking in that direction
                 }
                 else{
+                    // now we know there is a piece standing on the destination tile.
                     pieceAtDestination = destinationTile.getPiece();
                     if(this.pieceAlliance != pieceAtDestination.getPieceAlliance()){
-                        legalMoves.add(new MajorAttackMove(board,this,candidateDestinationIndex, pieceAtDestination));
+                        legalMoves.add(new MajorAttackMove
+                                (board,this,candidateDestinationIndex, pieceAtDestination));
+                           // if the piece's color is not like the rook's, we know it's an attacking/capturing move
                     }
                     break; // because a piece blocks us, we can't continue checking in that direction
                 }
             }
         }
-        return ImmutableList.copyOf(legalMoves);
+        return ImmutableList.copyOf(legalMoves); // returns an immutable copy of the list
     }
     @Override
     public Rook movePiece(Move move) {

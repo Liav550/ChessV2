@@ -34,13 +34,13 @@ public class King extends Piece{
 
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
-        int destinationIndex; // the index of the tile that the knight can move to (if valid)
+        int candidateDestinationIndex; // the index of the tile that the knight can move to (if valid)
         Tile destinationTile; // the tile of the destination
         Piece pieceOnDestination; // the piece in the destination tile (if exists)
         final List<Move> legalMoves = new ArrayList<>();
         for(int offset: CANDIDATE_MOVE_OFFSETS){ // looping through all offsets
-            destinationIndex = this.piecePosition + offset;
-            if(!BoardUtils.isValidTileIndex(destinationIndex)){
+            candidateDestinationIndex = this.piecePosition + offset;
+            if(!BoardUtils.isValidTileIndex(candidateDestinationIndex)){
                 continue;
             }
             if(isFirstColumnExclusion(this.piecePosition,offset) ||
@@ -50,16 +50,16 @@ public class King extends Piece{
                                                         //offset
                 continue;
             }
-            destinationTile = board.getTile(destinationIndex);
+            destinationTile = board.getTile(candidateDestinationIndex);
             if(!destinationTile.isTileOccupied()){ // if the tile is empty, we add a normal move to the list.
-                legalMoves.add(new MajorMove(board,this,destinationIndex));
+                legalMoves.add(new MajorMove(board,this,candidateDestinationIndex));
             }
             else{
                 // now we know there is a piece on the destination tile
                 pieceOnDestination = destinationTile.getPiece();
                 if(pieceOnDestination.pieceAlliance != this.pieceAlliance){ // if the piece's color
                                                                             // is not like the king's
-                    legalMoves.add(new MajorAttackMove(board,this,destinationIndex,pieceOnDestination));
+                    legalMoves.add(new MajorAttackMove(board,this,candidateDestinationIndex,pieceOnDestination));
                                   // we know it is an attack/capturing move
                 }
             }

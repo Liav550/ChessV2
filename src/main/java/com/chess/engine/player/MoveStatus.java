@@ -1,5 +1,10 @@
 package com.chess.engine.player;
 
+/**
+ * @author liavb
+ * the MoveStatus enumaration is used in order to keep track on move executions.
+ */
+// TODO - YOU DOCUMENTED ME
 public enum MoveStatus {
     DONE{
         @Override

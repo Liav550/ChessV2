@@ -14,6 +14,11 @@ import java.util.Collection;
 import java.util.List;
 
 // Check out ChessBoardIndexes.png on resources for indexes!!!
+/**
+ * @author liavb
+ * The Knight class represents the knight piece.
+ */
+// TODO - YOU DOCUMENTED ME
 public class Knight extends Piece{
     private static final int[] CANDIDATE_MOVE_OFFSETS = {-17,-15,-10,-6,6,10,15,17};
             // that array contains the 8 possible offsets the knight can go to from its current position (if possible)
@@ -29,14 +34,14 @@ public class Knight extends Piece{
 
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
-        int destinationIndex; // the index of the tile that the knight can move to (if valid)
-        Tile destinationTile; // the tile of the destination
-        Piece pieceAtDestination; // the piece in the destination tile (if exists)
+        int candidateDestinationIndex;
+        Tile destinationTile;
+        Piece pieceAtDestination; // if exists
         final List<Move> legalMoves = new ArrayList<>();
         for (int offset: CANDIDATE_MOVE_OFFSETS) { // looping through all offsets
-            destinationIndex = this.piecePosition + offset;
-            if(!BoardUtils.isValidTileIndex(destinationIndex)){
-                continue;
+            candidateDestinationIndex = this.piecePosition + offset;
+            if(!BoardUtils.isValidTileIndex(candidateDestinationIndex)){
+                continue; // if an index is invalid, we continue in order to check the next one
             }
             if(isFirstColumnExclusion(this.piecePosition, offset) ||
                     isSecondColumnExclusion(this.piecePosition,offset) ||
@@ -46,19 +51,22 @@ public class Knight extends Piece{
                                                                          //offset
                 continue;
             }
-            destinationTile = board.getTile(destinationIndex);
+            destinationTile = board.getTile(candidateDestinationIndex);
             if(!destinationTile.isTileOccupied()){
-                legalMoves.add(new MajorMove(board,this,destinationIndex));
+                legalMoves.add(new MajorMove(board,this,candidateDestinationIndex));
+                                                            // if the tile is empty, we add this normal move to the list
             }
             else{
                 pieceAtDestination = destinationTile.getPiece();
                 Alliance destinationPieceAlliance = pieceAtDestination.getPieceAlliance();
                 if(this.pieceAlliance != destinationPieceAlliance){
-                    legalMoves.add(new MajorAttackMove(board,this,destinationIndex, pieceAtDestination));
+                    legalMoves.add(new MajorAttackMove
+                            (board,this,candidateDestinationIndex, pieceAtDestination));
+                              // if the piece's color is not like the knight's, we know it's an attacking/capturing move
                 }
             }
         }
-        return ImmutableList.copyOf(legalMoves);
+        return ImmutableList.copyOf(legalMoves); // returns an immutable copy of the list
     }
     @Override
     public Knight movePiece(Move move) {

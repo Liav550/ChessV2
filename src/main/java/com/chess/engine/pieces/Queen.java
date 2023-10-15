@@ -21,11 +21,12 @@ import java.util.List;
 // TODO - YOU DOCUMENTED ME
 public class Queen extends Piece{
     private static final int[] CANDIDATE_QUEEN_DIRECTION_OFFSETS = {-9,-8,-7,-1,1,7,8,9};
-      ///*
-      // the directions that a queen can move to.
-      // for example, a queen can go from tile 45 to tile 9, because 45-9-9-9-9= 9.
-      // a queen can go from tile 28 to tile 44 because 28+8+8 = 44
-      // NOTE: there are some exclusions to this rule, which will be handled
+          /*
+            the directions that a queen can move to.
+            for example, a queen can go from tile 45 to tile 9, because 45-9-9-9-9= 9.
+                         a queen can go from tile 28 to tile 44 because 28+8+8 = 44
+            NOTE: there are some exclusions to this rule, which will be handled
+          */
     public Queen(int piecePosition, Alliance alliance) {
         super(PieceType.QUEEN,piecePosition, alliance,true);
     }
@@ -54,11 +55,12 @@ public class Queen extends Piece{
                 if(!destinationTile.isTileOccupied()){
                     legalMoves.add(new Move.MajorMove(board,this,candidateDestinationIndex));
                                                                             // if the tile is empty,
-                                                                            // we add a new move to the list.
+                                                                            // we add a new normal move to the list.
 
                     if(isFirstColumnExclusion(candidateDestinationIndex, offset) ||
                             isEighthColumnExclusion(candidateDestinationIndex, offset)){
-                        break; // if we got to the end of the diagonal or the line, we can move on to the next offset.
+                        break; // if we got to the end of the diagonal or the line, we can break and move on to the next
+                               // offset.
                     }
 
                     candidateDestinationIndex += offset; // continue checking in that direction.
@@ -68,8 +70,9 @@ public class Queen extends Piece{
                     pieceAtDestination = destinationTile.getPiece();
                     Alliance destinationPieceAlliance = pieceAtDestination.getPieceAlliance();
                     if(this.pieceAlliance != destinationPieceAlliance){
-                        legalMoves.add(new MajorAttackMove(board,this,candidateDestinationIndex, pieceAtDestination));
-                          // if the piece's color is not like the queen's, we know it's an attacking/ capturing move
+                        legalMoves.add(new MajorAttackMove
+                                (board,this,candidateDestinationIndex, pieceAtDestination));
+                          // if the piece's color is not like the queen's, we know it's an attacking/capturing move
                     }
                     break; // because a piece blocks us, we can't continue checking in that direction.
                 }

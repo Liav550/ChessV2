@@ -5,6 +5,11 @@ import com.chess.engine.player.BlackPlayer;
 import com.chess.engine.player.Player;
 import com.chess.engine.player.WhitePlayer;
 
+/**
+ * @author liavb
+ * the Alliance enumaration represents a color of the 2 sides/pieces.
+ */
+// TODO - YOU DOCUMENTED ME
 public enum Alliance {
     WHITE{
         @Override
@@ -77,8 +82,9 @@ public enum Alliance {
             return "Black";
         }
     };
-    public abstract int getDirection();
-    public abstract int getOppositeDirection();
+    public abstract int getDirection(); // the direction that pawns in this alliance type advance towards
+    public abstract int getOppositeDirection(); // the opposite direction to the direction that pawns in this alliance
+                                                // type advance towards
     public abstract boolean isBlack();
     public abstract boolean isWhite();
     public abstract boolean isPawnPromotionTile(int tileIndex);
