@@ -23,24 +23,29 @@ public class Pawn extends Piece{
 
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
-        int destinationIndex; // the index of the tile that the pawn can move to (if valid)
+        int candidateDestinationIndex; // the index of the tile that the pawn can move to (if valid)
         int behindDestinationIndex; // this is for the double jump that pawns can do on their first move.
                                     // we have to make sure this tile is not occupied.
         Piece pieceOnDestination; // the piece in the destination tile (if exists)
         final List<Move> legalMoves = new ArrayList<>();
 
         for(int offset: CANDIDATE_MOVE_OFFSETS){ // looping through all offsets
-           destinationIndex = this.piecePosition + (offset*this.pieceAlliance.getDirection());// here we have to consider
+           candidateDestinationIndex = this.piecePosition + (offset*this.pieceAlliance.getDirection());// here we have to consider
                                                                                               // the direction the pawn
                                                                                               // moves towards.
-           if(!BoardUtils.isValidTileIndex(destinationIndex)){
+           if(!BoardUtils.isValidTileIndex(candidateDestinationIndex)){
                continue;
            }
-           if(offset == 8 && !board.getTile(destinationIndex).isTileOccupied()){ //if we want to move 1 tile and
+           if(offset == 8 && !board.getTile(candidateDestinationIndex).isTileOccupied()){ //if we want to move 1 tile and
                                                                                  // that tile is empty,
                                                                                  // the move is legal
                // TODO: MORE WORK TO DO HERE - deal with promotions
-               legalMoves.add(new PawnMove(board,this,destinationIndex));
+               if(this.pieceAlliance.isPawnPromotionTile(candidateDestinationIndex)){
+                   legalMoves.add(new PawnPromotion(new PawnMove(board,this,candidateDestinationIndex)));
+               }
+               else {
+                   legalMoves.add(new PawnMove(board, this, candidateDestinationIndex));
+               }
            }
            else if (offset == 16 && this.isFirstMove() &&
                    ((BoardUtils.isInRow(this.piecePosition,1) && this.pieceAlliance.isBlack()) ||
@@ -49,20 +54,26 @@ public class Pawn extends Piece{
                                                                                                      // is valid
                behindDestinationIndex = this.piecePosition + (8* this.pieceAlliance.getDirection());
                if(!board.getTile(behindDestinationIndex).isTileOccupied() &&
-                  !board.getTile(destinationIndex).isTileOccupied()){ // if the destination tile and the tile behind it
+                  !board.getTile(candidateDestinationIndex).isTileOccupied()){ // if the destination tile and the tile behind it
                                                                       // are empty, double jump is legal
-                   legalMoves.add(new PawnJump(board,this,destinationIndex));
+                   legalMoves.add(new PawnJump(board,this,candidateDestinationIndex));
                }
            }
            else if (offset == 7 && !(BoardUtils.isInColumn(this.piecePosition,7) && this.pieceAlliance.isWhite()
                                   || BoardUtils.isInColumn(this.piecePosition,0) && this.pieceAlliance.isBlack())) {
                       // making sure to deal with special cases
 
-                if(board.getTile(destinationIndex).isTileOccupied()){
-                    pieceOnDestination = board.getTile(destinationIndex).getPiece();
+                if(board.getTile(candidateDestinationIndex).isTileOccupied()){
+                    pieceOnDestination = board.getTile(candidateDestinationIndex).getPiece();
                     if(this.pieceAlliance != pieceOnDestination.pieceAlliance){
                         //TODO MORE TO BE DONE HERE
-                        legalMoves.add(new PawnAttackMove(board,this,destinationIndex,pieceOnDestination));
+                        if(this.pieceAlliance.isPawnPromotionTile(candidateDestinationIndex)){
+                            legalMoves.add(new PawnPromotion(new PawnAttackMove
+                                    (board,this,candidateDestinationIndex,pieceOnDestination)));
+                        }
+                        else {
+                            legalMoves.add(new PawnAttackMove(board, this, candidateDestinationIndex, pieceOnDestination));
+                        }
                     }
                 }
                 else if (board.getEnPassentPawn() != null) {
@@ -71,7 +82,7 @@ public class Pawn extends Piece{
                            pieceOnDestination = board.getEnPassentPawn();
                            if(pieceOnDestination.getPieceAlliance() != this.pieceAlliance){
                                legalMoves.add(new PawnEnPassentAttackMove
-                                       (board,this,destinationIndex,pieceOnDestination));
+                                       (board,this,candidateDestinationIndex,pieceOnDestination));
                            }
                         }
                 }
@@ -80,11 +91,16 @@ public class Pawn extends Piece{
            else if (offset == 9 && !(BoardUtils.isInColumn(this.piecePosition,0) && this.pieceAlliance.isWhite()
                    || BoardUtils.isInColumn(this.piecePosition,7) && this.pieceAlliance.isBlack())) {
                       // making sure to deal with special cases
-               if(board.getTile(destinationIndex).isTileOccupied()){
-                   pieceOnDestination = board.getTile(destinationIndex).getPiece();
+               if(board.getTile(candidateDestinationIndex).isTileOccupied()){
+                   pieceOnDestination = board.getTile(candidateDestinationIndex).getPiece();
                    if(this.pieceAlliance != pieceOnDestination.pieceAlliance){
-                       //TODO MORE TO BE DONE HERE
-                       legalMoves.add(new PawnAttackMove(board,this,destinationIndex,pieceOnDestination));
+                       if(this.pieceAlliance.isPawnPromotionTile(candidateDestinationIndex)){
+                           legalMoves.add(new PawnPromotion(new PawnAttackMove
+                                   (board,this,candidateDestinationIndex,pieceOnDestination)));
+                       }
+                       else {
+                           legalMoves.add(new PawnAttackMove(board, this, candidateDestinationIndex, pieceOnDestination));
+                       }
                    }
                }
                else if (board.getEnPassentPawn() != null) {
@@ -93,7 +109,7 @@ public class Pawn extends Piece{
                        pieceOnDestination = board.getEnPassentPawn();
                        if(pieceOnDestination.getPieceAlliance() != this.pieceAlliance){
                            legalMoves.add(new PawnEnPassentAttackMove
-                                   (board,this,destinationIndex,pieceOnDestination));
+                                   (board,this,candidateDestinationIndex,pieceOnDestination));
                        }
                    }
                }
@@ -108,5 +124,9 @@ public class Pawn extends Piece{
     @Override
     public String toString() {
         return PieceType.PAWN.toString();
+    }
+
+    public Piece getPromotionPiece() {
+        return new Queen(this.piecePosition, this.pieceAlliance, false);
     }
 }

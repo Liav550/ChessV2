@@ -4,8 +4,10 @@ import com.chess.engine.pieces.Pawn;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 
-import static com.chess.engine.board.Board.*;
+import java.util.Objects;
 
+import static com.chess.engine.board.Board.*;
+// TODO DOCUMENT THIS CLASS AT THE END
 public abstract class Move {
     protected final Board board; // the board in which the move happens
     protected final Piece movedPiece; // the moved piece
@@ -53,6 +55,9 @@ public abstract class Move {
     public boolean isCastlingMove(){return false;}
     public Piece getAttackedPiece(){return null;}
     public int getCurrentIndex(){return this.movedPiece.getPiecePosition();}
+    public Board getBoard(){
+        return this.board;
+    }
     @Override
     public boolean equals(Object other) {
         if(this == other){
@@ -202,7 +207,56 @@ public abstract class Move {
             return builder.build();
         }
     }
+    public static final class PawnPromotion extends Move{
+        private final Move mainMove;
+        private final Pawn promotedPawn;
+        public PawnPromotion(Move mainMove) {
+            super(mainMove.getBoard(), mainMove.getMovedPiece(), mainMove.getDestinationIndex());
+            this.mainMove = mainMove;
+            this.promotedPawn = (Pawn)mainMove.getMovedPiece();
+        }
 
+        @Override
+        public Board execute() {
+            Board afterMainMove = mainMove.execute();
+            Builder builder = new Builder();
+            for(Piece piece: afterMainMove.getCurrentPlayer().getActivePieces()){
+                if(!this.promotedPawn.equals(piece)){
+                    builder.setPiece(piece);
+                }
+            }
+            for(Piece piece: afterMainMove.getCurrentPlayer().getOpponent().getActivePieces()){
+                builder.setPiece(piece);
+            }
+            builder.setPiece(this.promotedPawn.getPromotionPiece().movePiece(this));
+            builder.setMoveMaker(afterMainMove.getCurrentPlayer().getAlliance());
+            return builder.build();
+        }
+
+        @Override
+        public boolean isAttack() {
+            return mainMove.isAttack();
+        }
+
+        @Override
+        public Piece getAttackedPiece() {
+            return mainMove.getAttackedPiece();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return this == other || other instanceof PawnPromotion && this.mainMove.equals(other);
+        }
+        @Override
+        public int hashCode() {
+            return mainMove.hashCode() + 31* promotedPawn.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return mainMove.toString() + "=" + promotedPawn.getPromotionPiece().toString();
+        }
+    }
     public static final class PawnJump extends Move{
         public PawnJump(Board board, Piece movedPiece, int destinationIndex) {
             super(board, movedPiece, destinationIndex);

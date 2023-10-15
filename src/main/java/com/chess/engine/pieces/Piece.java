@@ -6,12 +6,17 @@ import com.chess.engine.board.Move;
 
 import java.util.Collection;
 
+/**
+ * @author liavb
+ * the Piece class is used to represent a piece in our board.
+ */
+// TODO - YOU DOCUMENTED ME
 public abstract class Piece {
-    protected final int piecePosition;
-    protected final Alliance pieceAlliance;
-    protected final boolean isFirstMove;
-    protected final PieceType pieceType;
-    private final int cachedHashCode;
+    protected final int piecePosition; // the current position of a piece
+    protected final Alliance pieceAlliance; // the alliance (color) of the piece
+    protected final boolean isFirstMove; // in order to know if the piece has moved yet
+    protected final PieceType pieceType; // to know the piece's type along with a few more properties
+    private final int cachedHashCode; // since the Piece is immutable, we can store the hash code
 
     public Piece(PieceType pieceType, int piecePosition, Alliance alliance, boolean isFirstMove) {
         this.pieceType = pieceType;
@@ -21,11 +26,17 @@ public abstract class Piece {
         this.isFirstMove = isFirstMove;
         this.cachedHashCode = calculateHashCode();
     }
-    /*
-        the following function is shared with all Piece subclass.
-        Its purpose is to generate all the legal moves of a certain piece in a given board.
+    /**
+     @param board: the board state that the piece is at.
+     @return: a collection of all the legal moves the piece has. (does not include check safety yet have it as a todo).
      */
     public abstract Collection<Move> calculateLegalMoves(Board board);
+
+    /**
+     * @param move: the move that the piece is going to follow.
+     * @return: a new piece from the same type as the current one, but the location of the new piece will be the
+     *          destination point the move has.
+     */
     public abstract Piece movePiece(Move move);
     public Alliance getPieceAlliance(){
         return this.pieceAlliance;
@@ -68,6 +79,11 @@ public abstract class Piece {
         return result;
     }
 
+    /**
+     * @author liavb
+     * The PieceTyoe enumaration is used to determine a piece's type and value.
+     * Also, it includes a toString method that will help us to display the moved piece on the move log of the game.
+     */
     public enum PieceType{
         PAWN(100,"P"){
             @Override
@@ -135,20 +151,20 @@ public abstract class Piece {
                 return false;
             }
         };
-        private final  String pieceName;
-        private final int value;
+        private final String pieceLetter; // the letter that represents the piece.
+        private final int value; // the value of that piece.
         PieceType(int value, String pieceName){
             this.value = value;
-            this.pieceName = pieceName;
+            this.pieceLetter = pieceName;
         }
-        public abstract boolean isKing();
-        public abstract boolean isRook();
+        public abstract boolean isKing(); // determines if the piece is a king or not.
+        public abstract boolean isRook(); // determines if the piece is a rook or not.
         public int getValue(){
             return value;
         }
         @Override
         public String toString(){
-            return this.pieceName;
+            return this.pieceLetter;
         }
     }
 }

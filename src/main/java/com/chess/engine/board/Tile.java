@@ -1,38 +1,62 @@
 package com.chess.engine.board;
 
 import com.chess.engine.pieces.Piece;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+
+/**
+ * @author liavb
+ * the Tile class is used to represent a single tile in our chess board.
+ */
+// TODO - YOU DOCUMENTED ME
 public abstract class Tile {
     protected final int tileIndex; // the index of the tile in our board (1d array in size of 64)
-    private static final Map<Integer, EmptyTile> EMPTY_TILE_CACHE = getAllPossibleEmptyTiles(); // cache of all 64
+    private static final List<EmptyTile> EMPTY_TILE_CACHE = getAllPossibleEmptyTiles(); // a cache of all 64
                                                                                                 //possible empty tiles
+
+    /**
+     * @return: all possible 64 empty tiles in a cache
+     */
+    private static List<EmptyTile> getAllPossibleEmptyTiles() {
+        List<EmptyTile> emptyTiles = new ArrayList<>();
+        for (int i = 0; i < BoardUtils.NUMBER_OF_TILES; i++) {
+            emptyTiles.add(new EmptyTile(i)); // adding a new empty tile in index i
+        }
+        return ImmutableList.copyOf(emptyTiles); // returns an immutable copy of the list
+    }
+
     private Tile(int tileIndex) {
         this.tileIndex = tileIndex;
     }
-    /*
-        The following function will be the only way to generate a tile.
-        If a piece exists on that tile, the function will return an Occupied Tile.
-        Otherwise, an Empty Tile will be returned
+
+    /**
+     * This method is the only way to create a tile of any kind.
+     * @param tileIndex: the index of the tile in the board
+     * @param piece: the piece that occupies the tile (if at all)
+     * @return the tile that has been created
      */
     public static Tile createTile(int tileIndex, Piece piece){
         return piece != null? new OccupiedTile(tileIndex,piece): EMPTY_TILE_CACHE.get(tileIndex);
+              // if the piece is null, it means the tile is empty, and therefore we return the corresponding empty tile
+              // from out cache, otherwise we instantiate an occupied tile.
     }
 
-    /*
-       the following function fills the cache with all 64 possible empty tiles
+    /**
+     * @return: true if the tile is occupied, and false otherwise
+     * this method's body is changing because an EmptyTile would return false and an OccupiedTile will return true.
+     * that is why the method is abstract.
      */
-    private static Map<Integer, EmptyTile> getAllPossibleEmptyTiles() {
-        final Map<Integer,EmptyTile> emptyTileMap = new HashMap<>();
-        for (int i = 0; i < BoardUtils.NUMBER_OF_TILES; i++) {
-            emptyTileMap.put(i,new EmptyTile(i));
-        }
-        return ImmutableMap.copyOf(emptyTileMap); // returns an immutable map, which is a copy of the original cache
-    }
     public abstract boolean isTileOccupied();
+
+    /**
+     * @return: the piece that occupies the tile.
+     * this method's body is changing because an EmptyTile would return null and an OccupiedTile will return the piece.
+     * that is why the method is abstract.
+     */
     public abstract Piece getPiece();
 
     public int getTileIndex(){return this.tileIndex;}
@@ -60,7 +84,7 @@ public abstract class Tile {
 
 
     public static final class OccupiedTile extends Tile{
-        private final Piece pieceOnTile;
+        private final Piece pieceOnTile; // the piece that occupies the tile.
         private OccupiedTile(int tileIndex, Piece pieceOnTile){
             super(tileIndex);
             this.pieceOnTile=pieceOnTile;

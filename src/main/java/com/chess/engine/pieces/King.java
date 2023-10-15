@@ -14,6 +14,12 @@ import java.util.Collection;
 import java.util.List;
 
 // Check out ChessBoardIndexes.png on resources for indexes!!!
+
+/**
+ * @author liavb
+ * The King class represents the king piece.
+ */
+// TODO - YOU DOCUMENTED ME
 public class King extends Piece{
     private static final int[] CANDIDATE_MOVE_OFFSETS = {-9, -8,-7,-1,1,7,8,9};
        // that array contains the 8 possible offsets the king can go to from its current position (if possible)
@@ -40,22 +46,25 @@ public class King extends Piece{
             if(isFirstColumnExclusion(this.piecePosition,offset) ||
                isEighthColumnExclusion(this.piecePosition,offset)){
                                                         //if the current offset is an exclusion because
-                                                        //of the knight's position, move on to the next
+                                                        //of the king's position, move on to the next
                                                         //offset
                 continue;
             }
             destinationTile = board.getTile(destinationIndex);
-            if(!destinationTile.isTileOccupied()){
+            if(!destinationTile.isTileOccupied()){ // if the tile is empty, we add a normal move to the list.
                 legalMoves.add(new MajorMove(board,this,destinationIndex));
             }
             else{
+                // now we know there is a piece on the destination tile
                 pieceOnDestination = destinationTile.getPiece();
-                if(pieceOnDestination.pieceAlliance != this.pieceAlliance){
+                if(pieceOnDestination.pieceAlliance != this.pieceAlliance){ // if the piece's color
+                                                                            // is not like the king's
                     legalMoves.add(new MajorAttackMove(board,this,destinationIndex,pieceOnDestination));
+                                  // we know it is an attack/capturing move
                 }
             }
         }
-        return ImmutableList.copyOf(legalMoves);
+        return ImmutableList.copyOf(legalMoves); // returns an immutable copy of the list
     }
     @Override
     public King movePiece(Move move) {
