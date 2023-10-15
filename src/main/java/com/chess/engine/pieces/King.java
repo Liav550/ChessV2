@@ -19,7 +19,6 @@ import java.util.List;
  * @author liavb
  * The King class represents the king piece.
  */
-// TODO - YOU DOCUMENTED ME
 public class King extends Piece{
     private static final int[] CANDIDATE_MOVE_OFFSETS = {-9, -8,-7,-1,1,7,8,9};
        // that array contains the 8 possible offsets the king can go to from its current position (if possible)

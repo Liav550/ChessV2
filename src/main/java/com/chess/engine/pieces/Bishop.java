@@ -18,7 +18,6 @@ import java.util.List;
  * @author liavb
  * The Bishop class represents the bishop piece.
  */
-// TODO - YOU DOCUMENTED ME
 public class Bishop extends Piece{
     private static final int[] CANDIDATE_BISHOP_DIRECTION_OFFSETS = {-9,-7,7,9}; // explanation below
          /*

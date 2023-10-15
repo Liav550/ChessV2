@@ -19,7 +19,6 @@ import java.util.List;
  * @author liavb
  * The Rook class represents the rook piece.
  */
-// TODO - YOU DOCUMENTED ME
 public class Rook extends Piece{
     private static final int[] CANDIDATE_ROOK_DIRECTION_OFFSETS = {-8,-1,1,8}; // explanation below
           /*

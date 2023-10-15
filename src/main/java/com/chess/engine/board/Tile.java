@@ -12,7 +12,6 @@ import java.util.List;
  * @author liavb
  * the Tile class is used to represent a single tile in our chess board.
  */
-// TODO - YOU DOCUMENTED ME
 public abstract class Tile {
     protected final int tileIndex; // the index of the tile in our board (1d array in size of 64)
     private static final List<EmptyTile> EMPTY_TILE_CACHE = getAllPossibleEmptyTiles(); // a cache of all 64

@@ -9,7 +9,6 @@ import com.chess.engine.player.WhitePlayer;
  * @author liavb
  * the Alliance enumaration represents a color of the 2 sides/pieces.
  */
-// TODO - YOU DOCUMENTED ME
 public enum Alliance {
     WHITE{
         @Override

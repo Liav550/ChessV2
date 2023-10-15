@@ -8,7 +8,6 @@ import java.util.*;
  * @author liavb
  * The BoardUtils class is used for static methods and variables related to the chess board.
  */
-// TODO - YOU DOCUMENTED ME
 public class BoardUtils {
     private static final List<String> NOTATION = initializeNotations(); // see the initializeNotations() method below
 

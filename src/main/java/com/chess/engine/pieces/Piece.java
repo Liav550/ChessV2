@@ -10,7 +10,6 @@ import java.util.Collection;
  * @author liavb
  * the Piece class is used to represent a piece in our board.
  */
-// TODO - YOU DOCUMENTED ME
 public abstract class Piece {
     protected final int piecePosition; // the current position of a piece
     protected final Alliance pieceAlliance; // the alliance (color) of the piece

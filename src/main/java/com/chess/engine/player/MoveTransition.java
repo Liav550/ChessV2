@@ -8,7 +8,6 @@ import com.chess.engine.board.Move;
  * the MoveTransition class is used for tracking transitions between board after each move
  * (since each board is immutable).
  */
-// TODO - YOU DOCUMENTED ME
 public class MoveTransition {
     private final Board transitionBoard; // the board we transition into
     private final Move move;

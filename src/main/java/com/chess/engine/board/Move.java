@@ -7,7 +7,7 @@ import com.chess.engine.pieces.Rook;
 import java.util.Objects;
 
 import static com.chess.engine.board.Board.*;
-// TODO DOCUMENT THIS CLASS AT THE END
+//TODO DOCUMENT THIS CLASS AT THE END
 public abstract class Move {
     protected final Board board; // the board in which the move happens
     protected final Piece movedPiece; // the moved piece
@@ -40,7 +40,7 @@ public abstract class Move {
     public Board execute() {
         Builder builder = new Builder();
         for(Piece piece: this.board.getCurrentPlayer().getActivePieces()){
-            if(!this.movedPiece.equals(piece)){ // todo handle hashcode & equals
+            if(!this.movedPiece.equals(piece)){
                 builder.setPiece(piece);
             }
         }

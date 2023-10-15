@@ -16,7 +16,6 @@ import java.util.*;
  * and validations)
  */
 
-// TODO - YOU DOCUMENTED ME
 public class Board {
     private final List<Tile> gameBoard; // the representation of the board as a list of 64 tiles
     private final Collection<Piece> activeWhitePieces; // stores all the white active pieces

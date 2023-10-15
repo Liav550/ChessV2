@@ -18,7 +18,6 @@ import java.util.List;
  * @author liavb
  * The Queen class represents the queen piece.
  */
-// TODO - YOU DOCUMENTED ME
 public class Queen extends Piece{
     private static final int[] CANDIDATE_QUEEN_DIRECTION_OFFSETS = {-9,-8,-7,-1,1,7,8,9};
           /*

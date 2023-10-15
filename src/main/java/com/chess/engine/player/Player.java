@@ -15,8 +15,9 @@ import java.util.List;
 /**
  * @author liavb
  * the Player class represents a player in the game of chess.
+ * the class has 2 subclasses- WhitePlayer and BlackPlayer. I devided it to two classes because the castling
+ * issue is different for each alliance.
  */
-// TODO - YOU DOCUMENTED ME
 public abstract class Player {
 
     protected final Board board; // the board that the player plays on.

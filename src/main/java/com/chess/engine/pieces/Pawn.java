@@ -16,7 +16,6 @@ import java.util.List;
  * @author liavb
  * The Pawn class represents the pawn piece.
  */
-// TODO - YOU DOCUMENTED ME
 public class Pawn extends Piece{
     private static final int[] CANDIDATE_MOVE_OFFSETS = {8,16,7,9};
        /*
