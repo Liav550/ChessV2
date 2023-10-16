@@ -7,11 +7,13 @@ import com.chess.engine.player.MoveTransition;
 
 public class MiniMax implements MoveStrategy{
     private final BoardEvaluator boardEvaluator;
-    public MiniMax(){
+    private final int depth;
+    public MiniMax(int searchDepth){
+        this.depth = searchDepth;
         this.boardEvaluator = new StandardBoardEvaluator(); // todo- be specific about which BoardEvaluator
     }
     @Override
-    public Move execute(Board board, int depth) {
+    public Move execute(Board board) {
         long startingTime = System.currentTimeMillis();
         Move bestMove = new NullMove();
 
@@ -22,7 +24,7 @@ public class MiniMax implements MoveStrategy{
 
         MoveTransition transition;
 
-        System.out.println(board.getCurrentPlayer().getAlliance() + "thinking with depth = "+ depth);
+        System.out.println(board.getCurrentPlayer().getAlliance() + "thinking with depth = "+ this.depth);
         for(Move move: board.getCurrentPlayer().getLegalMoves()){
             transition = board.getCurrentPlayer().makeMove(move);
             if(!transition.getMoveStatus().isDone()){
@@ -30,8 +32,8 @@ public class MiniMax implements MoveStrategy{
             }
 
             currentValue = board.getCurrentPlayer().getAlliance().isWhite()?
-                           minimum(transition.getTransitionBoard(), depth - 1):
-                           maximum(transition.getTransitionBoard(), depth - 1);
+                           minimum(transition.getTransitionBoard(), this.depth - 1):
+                           maximum(transition.getTransitionBoard(), this.depth - 1);
             if(board.getCurrentPlayer().getAlliance().isWhite() && currentValue >= highestValueSeen){
                 highestValueSeen = currentValue;
                 bestMove = move;
@@ -48,7 +50,7 @@ public class MiniMax implements MoveStrategy{
     }
 
     public int minimum(Board board, int depth){
-        if(depth == 0 /* || gameOver*/){
+        if(depth == 0 || isGameOver(board)){
             return boardEvaluator.evaluate(board,depth);
         }
 
@@ -68,7 +70,7 @@ public class MiniMax implements MoveStrategy{
         return lowestValueSeen;
     }
     public int maximum(Board board, int depth){
-        if(depth == 0 /* || gameOver*/){
+        if(depth == 0 || isGameOver(board)){
             return boardEvaluator.evaluate(board,depth);
         }
 
@@ -87,6 +89,11 @@ public class MiniMax implements MoveStrategy{
         }
         return highestValueSeen;
     }
+
+    private boolean isGameOver(Board board) {
+        return board.getCurrentPlayer().isInCheckmate() || board.getCurrentPlayer().isInStalemate();
+    }
+
     @Override
     public String toString() {
         return "MiniMax";

@@ -264,7 +264,6 @@ public abstract class Move {
 
         @Override
         public Board execute() {
-            System.out.println("executing");
             Builder builder = new Builder();
             for(Piece piece: board.getCurrentPlayer().getActivePieces()){
                 if(!piece.equals(movedPiece)){
