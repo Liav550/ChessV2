@@ -10,7 +10,7 @@ public class MiniMax implements MoveStrategy{
     private final int depth;
     public MiniMax(int searchDepth){
         this.depth = searchDepth;
-        this.boardEvaluator = new StandardBoardEvaluator(); // todo- be specific about which BoardEvaluator
+        this.boardEvaluator = new StandardBoardEvaluator();
     }
     @Override
     public Move execute(Board board) {

@@ -142,7 +142,7 @@ public class Pawn extends Piece{
     }
     @Override
     public Pawn movePiece(Move move) {
-        return new Pawn(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
+        return new Pawn(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false);
     }
     @Override
     public String toString() {

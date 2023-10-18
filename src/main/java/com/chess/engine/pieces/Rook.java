@@ -77,7 +77,7 @@ public class Rook extends Piece{
     }
     @Override
     public Rook movePiece(Move move) {
-        return new Rook(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
+        return new Rook(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false);
     }
 
     private boolean isFirstColumnExclusion(int tileIndex, int offset) { // an exclusion to the rule

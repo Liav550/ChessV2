@@ -27,7 +27,7 @@ public abstract class Piece {
     }
     /**
      @param board: the board state that the piece is at.
-     @return: a collection of all the legal moves the piece has. (does not include check safety yet have it as a todo).
+     @return: a collection of all the legal moves the piece has.
      */
     public abstract Collection<Move> calculateLegalMoves(Board board);
 

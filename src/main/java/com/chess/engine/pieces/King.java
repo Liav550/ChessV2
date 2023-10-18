@@ -67,7 +67,7 @@ public class King extends Piece{
     }
     @Override
     public King movePiece(Move move) {
-        return new King(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
+        return new King(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false);
     }
     private boolean isFirstColumnExclusion(int tileIndex, int offset){ // an exclusion to the rule
                                                                        // that occurs when the king is in 1st column
