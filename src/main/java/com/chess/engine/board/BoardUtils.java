@@ -88,4 +88,8 @@ public class BoardUtils {
     public static int getIndexFromNotation(String notation){
         return NOTATION_TO_INDEX.get(notation);
     }
+
+    public static boolean isGameOver(Board board) {
+        return board.getCurrentPlayer().isInCheckmate() || board.getCurrentPlayer().isInStalemate();
+    }
 }

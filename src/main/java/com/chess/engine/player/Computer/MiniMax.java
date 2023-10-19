@@ -1,6 +1,7 @@
 package com.chess.engine.player.Computer;
 
 import com.chess.engine.board.Board;
+import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Move.NullMove;
 import com.chess.engine.player.MoveTransition;
@@ -50,7 +51,7 @@ public class MiniMax implements MoveStrategy{
     }
 
     public int minimum(Board board, int depth){
-        if(depth == 0 || isGameOver(board)){
+        if(depth == 0 || BoardUtils.isGameOver(board)){
             return boardEvaluator.evaluate(board,depth);
         }
 
@@ -70,7 +71,7 @@ public class MiniMax implements MoveStrategy{
         return lowestValueSeen;
     }
     public int maximum(Board board, int depth){
-        if(depth == 0 || isGameOver(board)){
+        if(depth == 0 || BoardUtils.isGameOver(board)){
             return boardEvaluator.evaluate(board,depth);
         }
 
@@ -88,10 +89,6 @@ public class MiniMax implements MoveStrategy{
             }
         }
         return highestValueSeen;
-    }
-
-    private boolean isGameOver(Board board) {
-        return board.getCurrentPlayer().isInCheckmate() || board.getCurrentPlayer().isInStalemate();
     }
 
     @Override

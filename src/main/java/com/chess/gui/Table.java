@@ -5,6 +5,7 @@ import com.chess.engine.board.BoardUtils;
 import com.chess.engine.board.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
+import com.chess.engine.player.Computer.AlphaBeta;
 import com.chess.engine.player.Computer.MiniMax;
 import com.chess.engine.player.Computer.MoveStrategy;
 import com.chess.engine.player.GameSetup;
@@ -406,7 +407,7 @@ public class Table extends Observable {
         }
         @Override
         protected Move doInBackground() throws Exception {
-            MoveStrategy strategy = new MiniMax(Table.getInstance().getGameSetup().getSearchDepth());
+            MoveStrategy strategy = new AlphaBeta(Table.getInstance().getGameSetup().getSearchDepth());
             Move bestMove = strategy.execute(Table.getInstance().getChessBoard());
             return bestMove;
         }
