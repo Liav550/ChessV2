@@ -144,6 +144,10 @@ public class Pawn extends Piece{
         return new Pawn(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false);
     }
     @Override
+    public int getLocationBonus(){
+        return this.pieceAlliance.pawnBonus(this.piecePosition);
+    }
+    @Override
     public String toString() {
         return PieceType.PAWN.toString();
     }

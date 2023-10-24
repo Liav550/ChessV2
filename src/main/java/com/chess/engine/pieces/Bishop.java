@@ -80,6 +80,10 @@ public class Bishop extends Piece{
     public Bishop movePiece(Move move) {
         return new Bishop(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
     }
+    @Override
+    public int getLocationBonus(){
+        return this.pieceAlliance.bishopBonus(this.piecePosition);
+    }
 
     private boolean isFirstColumnExclusion(int tileIndex, int offset){ // an exclusion to the rule
                                                                        // that occurs when the bishop is in 1st column

@@ -7,8 +7,12 @@ import com.chess.engine.board.Move;
 import com.chess.engine.player.MoveTransition;
 import com.chess.engine.player.Player;
 import com.chess.engine.player.PlayerType;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 
 import java.awt.*;
+import java.util.Collection;
+import java.util.Comparator;
 
 public class AlphaBeta implements MoveStrategy{
     private final BoardEvaluator evaluator;
@@ -30,11 +34,10 @@ public class AlphaBeta implements MoveStrategy{
         System.out.println(board.getCurrentPlayer().getAlliance().toString() + " THINKING with depth = " + this.depth);
         int moveCounter = 1;
         int numMoves = board.getCurrentPlayer().getLegalMoves().size();
-        for (final Move move : ((board.getCurrentPlayer().getLegalMoves()))) {
+        for (final Move move :((board.getCurrentPlayer().getLegalMoves()))) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             final String s;
             if (moveTransition.getMoveStatus().isDone()) {
-                final long candidateMoveStartTime = System.nanoTime();
                 currentValue = currentPlayer.getAlliance().isWhite() ?
                         minimum(moveTransition.getTransitionBoard(), this.depth - 1, highestSeenValue, lowestSeenValue) :
                         maximum(moveTransition.getTransitionBoard(), this.depth - 1, highestSeenValue, lowestSeenValue);
@@ -62,39 +65,37 @@ public class AlphaBeta implements MoveStrategy{
         if(depth == 0 || BoardUtils.isGameOver(board)){
             return evaluator.evaluate(board,depth);
         }
-        int currentHighest = highest;
         MoveTransition transition;
         Board transitionBoard;
-        for(Move move: board.getCurrentPlayer().getLegalMoves()){
+        for(Move move: (board.getCurrentPlayer().getLegalMoves())){
             transition = board.getCurrentPlayer().makeMove(move);
             if(transition.getMoveStatus().isDone()){
                 transitionBoard = transition.getTransitionBoard();
-                currentHighest = Math.max(currentHighest, minimum(transitionBoard, depth-1, currentHighest,lowest));
-                if(currentHighest>= lowest){
+                highest = Math.max(highest, minimum(transitionBoard, depth-1, highest,lowest));
+                if(highest>= lowest){
                     return lowest;
                 }
             }
         }
-        return currentHighest;
+        return highest;
     }
 
     private int minimum(Board board, int depth, int highest, int lowest){
         if(depth == 0 || BoardUtils.isGameOver(board)){
             return evaluator.evaluate(board,depth);
         }
-        int currentLowest = lowest;
         MoveTransition transition;
         Board transitionBoard;
-        for(Move move: board.getCurrentPlayer().getLegalMoves()){
+        for(Move move: (board.getCurrentPlayer().getLegalMoves())){
             transition = board.getCurrentPlayer().makeMove(move);
             if(transition.getMoveStatus().isDone()){
                 transitionBoard = transition.getTransitionBoard();
-                currentLowest = Math.min(currentLowest, maximum(transitionBoard, depth-1, highest,currentLowest));
-                if(currentLowest<= highest){
+                lowest = Math.min(lowest, maximum(transitionBoard, depth-1, highest,lowest));
+                if(lowest<= highest){
                     return highest;
                 }
             }
         }
-        return currentLowest;
+        return lowest;
     }
 }

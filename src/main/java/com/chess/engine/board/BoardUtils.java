@@ -1,4 +1,6 @@
 package com.chess.engine.board;
+import com.chess.engine.pieces.Piece;
+import com.chess.engine.player.MoveTransition;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -91,5 +93,20 @@ public class BoardUtils {
 
     public static boolean isGameOver(Board board) {
         return board.getCurrentPlayer().isInCheckmate() || board.getCurrentPlayer().isInStalemate();
+    }
+
+    public static boolean kingThreat(Move move) {
+        Board board = move.getBoard();
+        MoveTransition transition = board.getCurrentPlayer().makeMove(move);
+        return transition.getTransitionBoard().getCurrentPlayer().isInCheckmate();
+    }
+
+    public static int getMoveValue(Move move) {
+        Piece pieceMoved = move.getMovedPiece();
+        if(move.isAttack()){
+            Piece attackedPiece = move.getAttackedPiece();
+            return attackedPiece.getPieceValue() - pieceMoved.getPieceValue() + Piece.PieceType.KING.getValue();
+        }
+        return -pieceMoved.getPieceValue() + Piece.PieceType.KING.getValue();
     }
 }

@@ -47,8 +47,8 @@ public class Table extends Observable {
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(800,700);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400,350);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10,10);
-    private static final Color LIGHT_TILE_COLOR = new Color(255, 138, 138);
-    private static final Color DARK_TILE_COLOR = new Color(232, 24, 24);
+    private static final Color DARK_TILE_COLOR = new Color(150, 75, 0);
+    private static final Color LIGHT_TILE_COLOR = new Color(225, 193, 110);
 
     private static final Table INSTANCE = new Table();
 

@@ -2,6 +2,7 @@ package com.chess.engine.player.Computer;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.pieces.Piece;
+import com.chess.engine.pieces.Piece.PieceType;
 import com.chess.engine.player.Player;
 import com.chess.engine.player.WhitePlayer;
 
@@ -10,6 +11,8 @@ public class StandardBoardEvaluator implements BoardEvaluator{
     private static final int CHECKMATE_BONUS = 10000;
     private static final int DEPTH_BONUS = 100;
     private static final int CASTLE_BONUS = 60;
+
+    private static final int BISHOP_PAIR_BONUS = 25;
 
     @Override
     public int evaluate(Board board, int depth) {
@@ -46,9 +49,13 @@ public class StandardBoardEvaluator implements BoardEvaluator{
 
     private static int piecesValue(Player player){
         int totalScore = 0;
+        int bishopCounter = 0;
         for(Piece piece: player.getActivePieces()){
-            totalScore += piece.getPieceValue();
+            totalScore += piece.getPieceValue() + piece.getLocationBonus();
+            if(piece.getPieceType() == PieceType.BISHOP){
+                bishopCounter++;
+            }
         }
-        return totalScore;
+        return totalScore + (bishopCounter==2? BISHOP_PAIR_BONUS: 0);
     }
 }
