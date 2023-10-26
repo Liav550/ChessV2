@@ -19,15 +19,18 @@ import java.util.List;
  * The King class represents the king piece.
  */
 public class King extends Piece{
+    private boolean isCastled;
     private static final int[] CANDIDATE_MOVE_OFFSETS = {-9, -8,-7,-1,1,7,8,9};
        // that array contains the 8 possible offsets the king can go to from its current position (if possible)
        // for example a king can go from tile 26 to tile 34 because 26+8=34.
        // NOTE: there are some exceptions to this rule, which will be handled
     public King(int piecePosition, Alliance alliance) {
         super(PieceType.KING,piecePosition, alliance,true);
+        this.isCastled = false;
     }
-    public King(int piecePosition, Alliance alliance, boolean isFirstMove) {
+    public King(int piecePosition, Alliance alliance, boolean isFirstMove, boolean isCastled) {
         super(PieceType.KING,piecePosition, alliance, isFirstMove);
+        this.isCastled = isCastled;
     }
 
     @Override
@@ -66,7 +69,10 @@ public class King extends Piece{
     }
     @Override
     public King movePiece(Move move) {
-        return new King(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false);
+        return new King(move.getDestinationIndex(),
+                move.getMovedPiece().getPieceAlliance(),
+                false,
+                move.isCastlingMove());
     }
     @Override
     public int getLocationBonus(){
@@ -91,5 +97,8 @@ public class King extends Piece{
     @Override
     public String toString() {
         return PieceType.KING.toString();
+    }
+    public boolean isCastled(){
+        return this.isCastled;
     }
 }

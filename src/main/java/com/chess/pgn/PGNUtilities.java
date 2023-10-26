@@ -1,4 +1,4 @@
-package pgn;
+package com.chess.pgn;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
@@ -19,6 +19,8 @@ public class PGNUtilities {
     private static final Pattern MAJOR_ATTACK_MOVE = Pattern.compile("^(B|N|R|Q|K)([a-h]|[1-8])?(x)([a-h][0-8])(\\+)?(#)?$");
     private static final Pattern PLAIN_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)=(.*?)");
     private static final Pattern ATTACK_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)x(.*?)=(.*?)");
+
+    public static int indexOfNextMove;
 
     private PGNUtilities(){
         throw new RuntimeException("You can't instantiate PGNUtilities");
@@ -127,5 +129,32 @@ public class PGNUtilities {
             return candidatesRefined.get(0).getCurrentIndex();
         }
         return -1;
+    }
+
+    public static String[] convertDatabasePGN(String[] pgnFromDB){
+        List<String> updatedPgn = new ArrayList<>();
+        for (int i = 0; i < pgnFromDB.length; i++) {
+            if(i% 3 == 0){
+                continue;
+            }
+            updatedPgn.add(pgnFromDB[i]);
+        }
+        return updatedPgn.toArray(new String[updatedPgn.size()]);
+    }
+
+    public static int containsPGNString(List<Move> gameMoves, String[] dbMoves){
+        String[] convertedDBMoves = convertDatabasePGN(dbMoves);
+        if(convertedDBMoves.length <= gameMoves.size()){
+            return -1;
+        }
+
+        int dbMovesIndex = 0;
+        for(Move move: gameMoves){
+            if(!((move.toString()).equals(convertedDBMoves[dbMovesIndex]))){
+                return -1;
+            }
+            dbMovesIndex++;
+        }
+        return dbMovesIndex;
     }
 }

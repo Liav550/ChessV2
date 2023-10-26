@@ -10,7 +10,7 @@ public class StandardBoardEvaluator implements BoardEvaluator{
     private static final int CHECK_BONUS = 50;
     private static final int CHECKMATE_BONUS = 10000;
     private static final int DEPTH_BONUS = 100;
-    private static final int CASTLE_BONUS = 60;
+    private static final int CASTLE_BONUS = 80;
 
     private static final int BISHOP_PAIR_BONUS = 25;
 

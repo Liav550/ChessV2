@@ -127,7 +127,7 @@ public abstract class Player {
         return !this.isInCheck && !hasLegalEscapeMoves();
     }
     public boolean isCastled(){
-        return false;
+        return playerKing.isCastled();
     }
 
 }

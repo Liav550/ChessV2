@@ -11,6 +11,8 @@ import com.chess.engine.player.Computer.MoveStrategy;
 import com.chess.engine.player.GameSetup;
 import com.chess.engine.player.MoveTransition;
 import com.chess.engine.player.PlayerType;
+import com.chess.openings.OpeningBook;
+import com.chess.openings.SectionClassifier;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
@@ -34,6 +36,7 @@ public class Table extends Observable {
     private static final String DEFAULT_PIECES_IMAGES_PATH = "piecesIcons/"; // in case we want to use different images in the future
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
+    private boolean openingBook;
     private final GameSetup gameSetup;
     private Board chessBoard;
     private Tile sourceTile;
@@ -49,7 +52,7 @@ public class Table extends Observable {
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10,10);
     private static final Color DARK_TILE_COLOR = new Color(150, 75, 0);
     private static final Color LIGHT_TILE_COLOR = new Color(225, 193, 110);
-
+    private static final int MAX_THEORY_DEPTH = 12;
     private static final Table INSTANCE = new Table();
 
     private Table() {
@@ -65,6 +68,7 @@ public class Table extends Observable {
         this.moveLog = new MoveLog();
         this.gameFrame.add(gameHistoryPanel,BorderLayout.EAST);
 
+        this.openingBook = false;
 
         this.highlightLegals = false;
 
@@ -92,6 +96,7 @@ public class Table extends Observable {
     private GameSetup getGameSetup(){
         return this.gameSetup;
     }
+
     private MoveLog getMoveLog(){
         return this.moveLog;
     }
@@ -101,8 +106,15 @@ public class Table extends Observable {
     private void setGameBoard(Board board) {
         this.chessBoard = board;
     }
+    private void setOpeningBook(boolean useOpeningBook){
+        this.openingBook = useOpeningBook;
+    }
     private void setComputerMove(Move move){
         this.computerMove = move;
+    }
+
+    private boolean useOpeningBook(){
+        return this.openingBook;
     }
 
     private void updateMoveMade(PlayerType playerType){
@@ -146,18 +158,20 @@ public class Table extends Observable {
         highLightLegalMovesOption.addActionListener(e -> highlightLegals = highLightLegalMovesOption.isSelected());
 
         preferencesMenu.add(highLightLegalMovesOption);
+
+        JCheckBoxMenuItem useOpeningBook = new JCheckBoxMenuItem("Use Opening Book", false);
+        useOpeningBook.addActionListener(e -> this.openingBook = useOpeningBook.isSelected());
+
+        preferencesMenu.add(useOpeningBook);
         return preferencesMenu;
     }
     private JMenu createOptionsMenu(){
         JMenu menu = new JMenu("Options");
 
         JMenuItem setupGame = new JMenuItem("Setup Game");
-        setupGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Table.getInstance().getGameSetup().promptUser();
-                Table.getInstance().setupUpdate(Table.getInstance().getGameSetup());
-            }
+        setupGame.addActionListener(e -> {
+            Table.getInstance().getGameSetup().promptUser();
+            Table.getInstance().setupUpdate(Table.getInstance().getGameSetup());
         });
 
         menu.add(setupGame);
@@ -207,15 +221,12 @@ public class Table extends Observable {
                             destinationTile = null;
                             humanMovedPiece = null;
                         }
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                gameHistoryPanel.redo(chessBoard, moveLog);
-                                if(gameSetup.isAIPlayer(chessBoard.getCurrentPlayer())){
-                                    Table.getInstance().updateMoveMade(PlayerType.HUMAN);
-                                }
-                                boardPanel.drawBoard(chessBoard);
+                        SwingUtilities.invokeLater(() -> {
+                            gameHistoryPanel.redo(chessBoard, moveLog);
+                            if(gameSetup.isAIPlayer(chessBoard.getCurrentPlayer())){
+                                Table.getInstance().updateMoveMade(PlayerType.HUMAN);
                             }
+                            boardPanel.drawBoard(chessBoard);
                         });
                     }
                 }
@@ -407,6 +418,31 @@ public class Table extends Observable {
         }
         @Override
         protected Move doInBackground() throws Exception {
+            if(Table.getInstance().useOpeningBook() &&
+                    Table.getInstance().getMoveLog().getMoves().size() <= MAX_THEORY_DEPTH){
+                OpeningBook openingBook = new OpeningBook();
+                char classifiedSection;
+                if(Table.getInstance().getMoveLog().getMoves().size() == 0){
+                    return openingBook.getFirstMove(Table.getInstance().getChessBoard());
+                }
+                if(Table.getInstance().getMoveLog().getMoves().size() == 1){
+                    classifiedSection = SectionClassifier.classify(Table.getInstance().getMoveLog().getMoves().get(0));
+                }
+                else{
+                    classifiedSection = SectionClassifier.classify(Table.getInstance().getMoveLog().getMoves().get(0),
+                            Table.getInstance().getMoveLog().getMoves().get(1));
+                }
+                openingBook.setCurrentCollection(classifiedSection);
+                Move nextMove = openingBook.getNextMove(Table.getInstance().getChessBoard(),
+                        Table.getInstance().getMoveLog().getMoves());
+                if(nextMove != null){
+                    openingBook.closeDBConnection();
+                    return nextMove;
+                }
+                else {
+                    Table.getInstance().setOpeningBook(false);
+                }
+            }
             MoveStrategy strategy = new AlphaBeta(Table.getInstance().getGameSetup().getSearchDepth());
             Move bestMove = strategy.execute(Table.getInstance().getChessBoard());
             return bestMove;

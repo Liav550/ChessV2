@@ -11,6 +11,7 @@ public class Main {
         Board board = Board.createStandardBoard();
         Table table = Table.getInstance();
 
+
         // todo - solve the issue that move highlighter highlights illegal moves that exposes player to check
 
         // todo - sit down with a pen and a paper and make sure you understand alpha beta
