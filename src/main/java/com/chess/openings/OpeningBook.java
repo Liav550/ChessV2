@@ -1,7 +1,7 @@
 package com.chess.openings;
 
 import com.chess.engine.board.Board;
-import com.chess.engine.board.Move;
+import com.chess.engine.moves.Move;
 import com.chess.pgn.PGNUtilities;
 import com.mongodb.client.*;
 import org.bson.Document;
@@ -41,9 +41,6 @@ public class OpeningBook {
         Collections.shuffle(shuffledDocuments);
         int comparisonResult;
         for(Document document: shuffledDocuments){
-            if(document == null){
-                break;
-            }
             comparisonResult = PGNUtilities.containsPGNString
                     ( moveHistory,document.getString("pgn").split(" "));
             if(comparisonResult == -1){

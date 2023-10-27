@@ -2,9 +2,9 @@ package com.chess.engine.pieces;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
-import com.chess.engine.board.Move;
-import com.chess.engine.board.Move.MajorAttackMove;
-import com.chess.engine.board.Move.MajorMove;
+import com.chess.engine.moves.Move;
+import com.chess.engine.moves.MajorAttackMove;
+import com.chess.engine.moves.MajorMove;
 import com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
@@ -69,10 +69,6 @@ public class Knight extends Piece{
     @Override
     public Knight movePiece(Move move) {
         return new Knight(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
-    }
-    @Override
-    public int getLocationBonus(){
-        return this.pieceAlliance.knightBonus(this.piecePosition);
     }
     private boolean isFirstColumnExclusion(int tileIndex, int offset){ // an exclusion to the rule
                                                                        // that occurs when the knight is in 1st column

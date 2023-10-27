@@ -2,8 +2,7 @@ package com.chess.engine.pieces;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
-import com.chess.engine.board.Move;
-import com.chess.engine.board.Move.*;
+import com.chess.engine.moves.*;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -142,10 +141,6 @@ public class Pawn extends Piece{
     @Override
     public Pawn movePiece(Move move) {
         return new Pawn(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false);
-    }
-    @Override
-    public int getLocationBonus(){
-        return this.pieceAlliance.pawnBonus(this.piecePosition);
     }
     @Override
     public String toString() {

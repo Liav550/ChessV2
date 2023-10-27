@@ -1,7 +1,7 @@
 package com.chess.engine.pieces;
 
 import com.chess.engine.board.Board;
-import com.chess.engine.board.Move;
+import com.chess.engine.moves.Move;
 
 import java.util.Collection;
 
@@ -36,7 +36,6 @@ public abstract class Piece {
      *          destination point the move has.
      */
     public abstract Piece movePiece(Move move);
-    public abstract int getLocationBonus();
     public Alliance getPieceAlliance(){
         return this.pieceAlliance;
     }

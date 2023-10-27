@@ -2,9 +2,9 @@ package com.chess.engine.player;
 
 import com.chess.engine.pieces.Alliance;
 import com.chess.engine.board.Board;
-import com.chess.engine.board.Move;
-import com.chess.engine.board.Move.KingSideCastleMove;
-import com.chess.engine.board.Move.QueenSideCastleMove;
+import com.chess.engine.moves.Move;
+import com.chess.engine.moves.KingSideCastleMove;
+import com.chess.engine.moves.QueenSideCastleMove;
 import com.chess.engine.board.Tile;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;

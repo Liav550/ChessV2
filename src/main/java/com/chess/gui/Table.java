@@ -2,11 +2,11 @@ package com.chess.gui;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
-import com.chess.engine.board.Move;
+import com.chess.engine.moves.Move;
 import com.chess.engine.board.Tile;
+import com.chess.engine.moves.MoveFactory;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.Computer.AlphaBeta;
-import com.chess.engine.player.Computer.MiniMax;
 import com.chess.engine.player.Computer.MoveStrategy;
 import com.chess.engine.player.GameSetup;
 import com.chess.engine.player.MoveTransition;
@@ -18,8 +18,6 @@ import com.google.common.collect.Lists;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -209,7 +207,7 @@ public class Table extends Observable {
                         }
                         else{
                             destinationTile = chessBoard.getTile(tileId);
-                            Move move = Move.MoveFactory.createMove(chessBoard,
+                            Move move = MoveFactory.createMove(chessBoard,
                                     sourceTile.getTileIndex(),
                                     destinationTile.getTileIndex());
                             MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);

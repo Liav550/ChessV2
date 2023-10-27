@@ -3,16 +3,10 @@ package com.chess.engine.player.Computer;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
-import com.chess.engine.board.Move;
+import com.chess.engine.moves.Move;
+import com.chess.engine.moves.NullMove;
 import com.chess.engine.player.MoveTransition;
 import com.chess.engine.player.Player;
-import com.chess.engine.player.PlayerType;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Ordering;
-
-import java.awt.*;
-import java.util.Collection;
-import java.util.Comparator;
 
 public class AlphaBeta implements MoveStrategy{
     private final BoardEvaluator evaluator;
@@ -27,7 +21,7 @@ public class AlphaBeta implements MoveStrategy{
     public Move execute(Board board) {
         Long startingTime = System.currentTimeMillis();
         Player currentPlayer = board.getCurrentPlayer();
-        Move bestMove = Move.NullMove.NULL_MOVE;
+        Move bestMove = NullMove.NULL_MOVE;
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;

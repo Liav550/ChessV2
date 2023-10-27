@@ -1,4 +1,5 @@
 package com.chess.engine.board;
+import com.chess.engine.moves.Move;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.player.MoveTransition;
 import com.google.common.collect.ImmutableList;

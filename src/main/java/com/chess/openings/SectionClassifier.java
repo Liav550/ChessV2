@@ -1,9 +1,7 @@
 package com.chess.openings;
 
-import com.chess.engine.board.Move;
+import com.chess.engine.moves.Move;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class SectionClassifier {

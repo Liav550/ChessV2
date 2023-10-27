@@ -2,10 +2,9 @@ package com.chess.engine.player.Computer;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
-import com.chess.engine.board.Move;
-import com.chess.engine.board.Move.MoveFactory;
+import com.chess.engine.moves.Move;
+import com.chess.engine.moves.MoveFactory;
 import com.chess.engine.player.MoveTransition;
-import com.chess.gui.Table;
 import com.chess.gui.Table.MoveLog;
 import com.chess.pgn.PGNUtilities;
 import org.junit.jupiter.api.Test;

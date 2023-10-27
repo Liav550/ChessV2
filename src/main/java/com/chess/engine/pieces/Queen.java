@@ -2,8 +2,9 @@ package com.chess.engine.pieces;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
-import com.chess.engine.board.Move;
-import com.chess.engine.board.Move.MajorAttackMove;
+import com.chess.engine.moves.MajorMove;
+import com.chess.engine.moves.Move;
+import com.chess.engine.moves.MajorAttackMove;
 import com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
@@ -51,7 +52,7 @@ public class Queen extends Piece{
 
                 destinationTile = board.getTile(candidateDestinationIndex);
                 if(!destinationTile.isTileOccupied()){
-                    legalMoves.add(new Move.MajorMove(board,this,candidateDestinationIndex));
+                    legalMoves.add(new MajorMove(board,this,candidateDestinationIndex));
                                                                             // if the tile is empty,
                                                                             // we add a new normal move to the list.
 
@@ -97,10 +98,6 @@ public class Queen extends Piece{
     @Override
     public Queen movePiece(Move move) {
         return new Queen(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
-    }
-    @Override
-    public int getLocationBonus(){
-        return this.pieceAlliance.queenBonus(this.piecePosition);
     }
     @Override
     public String toString() {
