@@ -36,6 +36,7 @@ public abstract class Piece {
      *          destination point the move has.
      */
     public abstract Piece movePiece(Move move);
+    public abstract int getLocationBonus();
     public Alliance getPieceAlliance(){
         return this.pieceAlliance;
     }

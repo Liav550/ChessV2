@@ -74,7 +74,10 @@ public class King extends Piece{
                 false,
                 move.isCastlingMove());
     }
-
+    @Override
+    public int getLocationBonus() {
+        return this.pieceAlliance.kingBonus(this.piecePosition);
+    }
     private boolean isFirstColumnExclusion(int tileIndex, int offset){ // an exclusion to the rule
                                                                        // that occurs when the king is in 1st column
         if(!BoardUtils.isInColumn(tileIndex,0)){

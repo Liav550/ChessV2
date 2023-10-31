@@ -8,6 +8,7 @@ import com.chess.engine.player.WhitePlayer;
 
 public class StandardBoardEvaluator implements BoardEvaluator{
     private static final int CHECK_BONUS = 50;
+
     private static final int CHECKMATE_BONUS = 10000;
     private static final int DEPTH_BONUS = 100;
     private static final int CASTLE_BONUS = 80;
@@ -23,8 +24,13 @@ public class StandardBoardEvaluator implements BoardEvaluator{
                 mobility(player) +
                 givesCheck(player) +
                 castled(player) +
+                pawnStructure(player) +
                 givesCheckMate(player,depth);
 
+    }
+
+    private int pawnStructure(Player player) {
+        return PawnStructureAnalyzer.pawnStructureScore(player);
     }
 
     private int givesCheckMate(Player player, int depth) {
@@ -51,7 +57,7 @@ public class StandardBoardEvaluator implements BoardEvaluator{
         int totalScore = 0;
         int bishopCounter = 0;
         for(Piece piece: player.getActivePieces()){
-            totalScore += piece.getPieceValue();
+            totalScore += piece.getPieceValue() + piece.getLocationBonus();
             if(piece.getPieceType() == PieceType.BISHOP){
                 bishopCounter++;
             }

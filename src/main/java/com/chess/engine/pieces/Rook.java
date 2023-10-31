@@ -78,6 +78,10 @@ public class Rook extends Piece{
     public Rook movePiece(Move move) {
         return new Rook(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false);
     }
+    @Override
+    public int getLocationBonus() {
+        return this.pieceAlliance.rookBonus(this.piecePosition);
+    }
 
     private boolean isFirstColumnExclusion(int tileIndex, int offset) { // an exclusion to the rule
                                                                         // that occurs when the rook is in 1st column
