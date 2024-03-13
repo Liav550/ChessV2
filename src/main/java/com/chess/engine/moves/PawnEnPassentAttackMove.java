@@ -1,6 +1,7 @@
 package com.chess.engine.moves;
 
 import com.chess.engine.board.Board;
+import com.chess.engine.board.Builder;
 import com.chess.engine.pieces.Piece;
 
 public final class PawnEnPassentAttackMove extends PawnAttackMove {
@@ -15,7 +16,7 @@ public final class PawnEnPassentAttackMove extends PawnAttackMove {
 
     @Override
     public Board execute() {
-        Board.Builder builder = new Board.Builder();
+        Builder builder = new Builder();
         for (Piece piece : board.getCurrentPlayer().getActivePieces()) {
             if (!this.movedPiece.equals(piece)) {
                 builder.setPiece(piece);

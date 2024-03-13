@@ -4,7 +4,7 @@ import com.chess.engine.board.Board;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 
-public final class KingSideCastleMove extends CastleMove {
+public class KingSideCastleMove extends CastleMove {
     public KingSideCastleMove(Board board, Piece movedPiece, int destinationIndex,
                               Rook castleRook, int castleRookStart, int castleRookDestination) {
         super(board, movedPiece, destinationIndex, castleRook, castleRookStart, castleRookDestination);

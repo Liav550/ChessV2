@@ -11,7 +11,7 @@ public final class MajorMove extends Move {
 
     @Override
     public boolean equals(Object other) {
-        return this == other || other instanceof com.chess.engine.moves.MajorMove && super.equals(other);
+        return this == other || other instanceof MajorMove && super.equals(other);
     }
 
     @Override

@@ -5,5 +5,15 @@
              version="3.0">
     <persistence-unit name="default">
 
+        <class>entity.AttemptEntity</class>
+        <class>entity.PasswordEntity</class>
+        <class>entity.UserEntity</class>
+        <class>entity.ResultEntity</class>
+        <properties>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/login"/>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.username" value="postgres"/>
+            <property name="hibernate.connection.password" value="0542615224L"/>
+        </properties>
     </persistence-unit>
 </persistence>

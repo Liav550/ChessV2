@@ -26,9 +26,7 @@ public class Knight extends Piece{
     public Knight(int piecePosition, Alliance alliance) {
         super(PieceType.KNIGHT,piecePosition, alliance,true);
     }
-    public Knight(int piecePosition, Alliance alliance, boolean isFirstMove) {
-        super(PieceType.KNIGHT,piecePosition, alliance, isFirstMove);
-    }
+
 
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
@@ -70,10 +68,7 @@ public class Knight extends Piece{
     public Knight movePiece(Move move) {
         return new Knight(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
     }
-    @Override
-    public int getLocationBonus() {
-        return this.pieceAlliance.knightBonus(this.piecePosition);
-    }
+
     private boolean isFirstColumnExclusion(int tileIndex, int offset){ // an exclusion to the rule
                                                                        // that occurs when the knight is in 1st column
         if(!BoardUtils.isInColumn(tileIndex,0)){

@@ -3,6 +3,7 @@ package com.chess.engine.board;
 import com.chess.engine.moves.Move;
 import com.chess.engine.pieces.Alliance;
 import com.chess.engine.pieces.*;
+import com.chess.engine.pieces.PieceType;
 import com.chess.engine.player.BlackPlayer;
 import com.chess.engine.player.Player;
 import com.chess.engine.player.WhitePlayer;
@@ -18,21 +19,21 @@ import java.util.*;
  */
 
 public class Board {
-    private final List<Tile> gameBoard; // the representation of the board as a list of 64 tiles
-    private final Collection<Piece> activeWhitePieces; // stores all the white active pieces
-    private final Collection<Piece> activeBlackPieces; // stores all the black active pieces
-    private final WhitePlayer whitePlayer; // represents the white player on the board
-    private final BlackPlayer blackPlayer; // represents the black player on the board
-    private final Player currentPlayer; // the player who possesses the right to play right now
-    private final Pawn enPassentPawn; // the pawn that just moved 2 squares on the previous board (if exists)
+    private List<Tile> gameBoard; // the representation of the board as a list of 64 tiles
+    private Collection<Piece> activeWhitePieces; // stores all the white active pieces
+    private Collection<Piece> activeBlackPieces; // stores all the black active pieces
+    private WhitePlayer whitePlayer; // represents the white player on the board
+    private BlackPlayer blackPlayer; // represents the black player on the board
+    private Player currentPlayer; // the player who possesses the right to play right now
+    private Pawn enPassentPawn; // the pawn that just moved 2 squares on the previous board (if exists)
 
-    private Board(Builder builder){
+    Board(Builder builder){
         this.gameBoard = createGameBoard(builder);
 
         this.activeWhitePieces = calculateActivePieces(this.gameBoard,Alliance.WHITE);
         this.activeBlackPieces = calculateActivePieces(this.gameBoard,Alliance.BLACK);
 
-        this.enPassentPawn = builder.enPassentPawn;
+        this.enPassentPawn = builder.getEnPassentPawn();
 
         Collection<Move> whiteStandardLegalMoves = calculateLegalMoves(this.activeWhitePieces); // calculating white's
                                                                                                 // standard legal moves
@@ -42,7 +43,7 @@ public class Board {
         this.whitePlayer = new WhitePlayer(this,whiteStandardLegalMoves,blackStandardLegalMoves);
         this.blackPlayer = new BlackPlayer(this,whiteStandardLegalMoves,blackStandardLegalMoves);
 
-        this.currentPlayer = builder.currentMoveMaker.choosePlayer(this.whitePlayer,this.blackPlayer);
+        this.currentPlayer = builder.getCurrentMoveMaker().choosePlayer(this.whitePlayer,this.blackPlayer);
     }
 
     /**
@@ -94,7 +95,7 @@ public class Board {
     public static List<Tile> createGameBoard(Builder builder){
         final Tile[] tiles = new Tile[BoardUtils.NUMBER_OF_TILES];
         for(int i =0;i<BoardUtils.NUMBER_OF_TILES;i++){
-            tiles[i] = Tile.createTile(i, builder.boardConfig.get(i)); // creating a tile with a piece matching to the
+            tiles[i] = Tile.createTile(i, builder.getBoardConfig().get(i)); // creating a tile with a piece matching to the
                                                                        // builder's boardConfig map
         }
         return ImmutableList.copyOf(tiles); // returning an immutable copy of the list
@@ -108,14 +109,14 @@ public class Board {
         Builder builder = new Builder();
         int i;
 
-        builder.setPiece(new Rook(0, Alliance.BLACK));
+        builder.setPiece(new Rook(0, Alliance.BLACK, PieceType.QUEEN));
         builder.setPiece(new Knight(1, Alliance.BLACK));
         builder.setPiece(new Bishop(2, Alliance.BLACK));
         builder.setPiece(new Queen(3, Alliance.BLACK));
         builder.setPiece(new King(4, Alliance.BLACK));
         builder.setPiece(new Bishop(5, Alliance.BLACK));
         builder.setPiece(new Knight(6, Alliance.BLACK));
-        builder.setPiece(new Rook(7, Alliance.BLACK));
+        builder.setPiece(new Rook(7, Alliance.BLACK, PieceType.KING));
 
         for (i=8;i < 16; i++) {
             builder.setPiece(new Pawn(i,Alliance.BLACK)); // setting black's pawns in their places
@@ -125,14 +126,14 @@ public class Board {
             builder.setPiece(new Pawn(i,Alliance.WHITE)); // setting white's pawns in their places
         }
 
-        builder.setPiece(new Rook(56,Alliance.WHITE));
+        builder.setPiece(new Rook(56,Alliance.WHITE, PieceType.QUEEN));
         builder.setPiece(new Knight(57,Alliance.WHITE));
         builder.setPiece(new Bishop(58,Alliance.WHITE));
         builder.setPiece(new Queen(59,Alliance.WHITE));
         builder.setPiece(new King(60,Alliance.WHITE));
         builder.setPiece(new Bishop(61,Alliance.WHITE));
         builder.setPiece(new Knight(62,Alliance.WHITE));
-        builder.setPiece(new Rook(63,Alliance.WHITE));
+        builder.setPiece(new Rook(63,Alliance.WHITE, PieceType.KING));
 
         builder.setMoveMaker(Alliance.WHITE); // the first move belongs to white
 
@@ -185,35 +186,5 @@ public class Board {
 
     public Pawn getEnPassentPawn(){
         return this.enPassentPawn;
-    }
-
-    /**
-     * @author liavb
-     * the Builder class is used to build an instance of the Board class.
-     */
-    public static class Builder{
-        private final Map<Integer, Piece> boardConfig; // a hashMap. the key is an index of a tile and
-                                                       // the value is the piece on that tile.
-        private Alliance currentMoveMaker; // the side that the right to play belongs to.
-        private Pawn enPassentPawn; // the pawn that just moved 2 squares on the previous board (if exists).
-
-        public Builder(){
-            this.boardConfig = new HashMap<>();
-        }
-        public Builder setPiece(Piece piece){
-            boardConfig.put(piece.getPiecePosition(), piece); // putting a new piece in the boardConfig
-            return this;
-        }
-        public Builder setMoveMaker(Alliance alliance){
-            this.currentMoveMaker = alliance;
-            return this;
-        }
-        public Board build(){
-            return new Board(this);
-        }
-
-        public void setEnPassentPawn(Pawn pawn) {
-            this.enPassentPawn = pawn;
-        }
     }
 }

@@ -12,8 +12,8 @@ import java.util.List;
 
 public class GameHistoryPanel extends JPanel {
     private static final Dimension HISTORY_PANEL_DIMENSION = new Dimension(100,400);
-    private final DataModel model;
-    private final JScrollPane scroller;
+    private DataModel model;
+    private JScrollPane scroller;
     public GameHistoryPanel(){
         setLayout(new BorderLayout());
         this.model = new DataModel();
@@ -43,10 +43,10 @@ public class GameHistoryPanel extends JPanel {
             Move lastMove = gameHistory.getMoves().get(gameHistory.size()-1);
             moveText = lastMove.toString();
             if(lastMove.getMovedPiece().getPieceAlliance().isWhite()){
-                this.model.setValueAt(moveText + addCheckOrCheckMateSigns(board), currentRow, 0);
+                this.model.setValueAt(moveText + getCheckOrCheckMateSigns(board), currentRow, 0);
             }
             else if(lastMove.getMovedPiece().getPieceAlliance().isBlack()){
-                this.model.setValueAt(moveText + addCheckOrCheckMateSigns(board), currentRow-1, 1);
+                this.model.setValueAt(moveText + getCheckOrCheckMateSigns(board), currentRow-1, 1);
             }
         }
 
@@ -54,7 +54,7 @@ public class GameHistoryPanel extends JPanel {
         vertical.setValue(vertical.getMaximum());
     }
 
-    private String addCheckOrCheckMateSigns(Board board) {
+    private String getCheckOrCheckMateSigns(Board board) {
         if(board.getCurrentPlayer().isInCheckmate()){
             return "#";
         }
@@ -65,9 +65,9 @@ public class GameHistoryPanel extends JPanel {
     }
 
     public static class DataModel extends DefaultTableModel{
-        private final List<Row> values;
+        private List<Row> values;
         private static final String[] NAMES = {"White","Black"};
-        DataModel(){
+        private DataModel(){
             values = new ArrayList<>();
         }
         public void clear(){
@@ -101,7 +101,7 @@ public class GameHistoryPanel extends JPanel {
         }
 
         @Override
-        public void setValueAt(Object aValue, int row, int column) {
+        public void setValueAt(Object value, int row, int column) {
             Row currentRow;
             if(row >= this.values.size()){
                 currentRow = new Row();
@@ -112,11 +112,11 @@ public class GameHistoryPanel extends JPanel {
             }
 
             if(column == 0){
-                currentRow.setWhiteMove((String) aValue);
+                currentRow.setWhiteMove((String) value);
                 fireTableRowsInserted(row,row);
             }
             else if(column == 1){
-                currentRow.setBlackMove((String) aValue);
+                currentRow.setBlackMove((String) value);
                 fireTableCellUpdated(row,column);
             }
         }
@@ -131,12 +131,9 @@ public class GameHistoryPanel extends JPanel {
             return NAMES[columnIndex];
         }
     }
-    private static class Row{
+    private static class Row {
         private String whiteMove;
         private String blackMove;
-        Row(){
-
-        }
         public String getWhiteMove(){return this.whiteMove;}
         public String getBlackMove(){return this.blackMove;}
         public void setWhiteMove(String move){this.whiteMove=move;}

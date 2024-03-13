@@ -1,12 +1,13 @@
 package com.chess.engine.moves;
 
 import com.chess.engine.board.Board;
+import com.chess.engine.board.Builder;
 import com.chess.engine.pieces.Pawn;
 import com.chess.engine.pieces.Piece;
 
 public final class PawnPromotion extends Move {
-    private final Move mainMove;
-    private final Pawn promotedPawn;
+    private Move mainMove;
+    private Pawn promotedPawn;
 
     public PawnPromotion(Move mainMove) {
         super(mainMove.getBoard(), mainMove.getMovedPiece(), mainMove.getDestinationIndex());
@@ -17,7 +18,7 @@ public final class PawnPromotion extends Move {
     @Override
     public Board execute() {
         Board afterMainMove = mainMove.execute();
-        Board.Builder builder = new Board.Builder();
+        Builder builder = new Builder();
         for (Piece piece : afterMainMove.getCurrentPlayer().getActivePieces()) {
             if (!this.promotedPawn.equals(piece)) {
                 builder.setPiece(piece);

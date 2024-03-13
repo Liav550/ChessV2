@@ -4,7 +4,7 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.pieces.Piece;
 
-public final class PawnMove extends Move {
+public class PawnMove extends Move {
     public PawnMove(Board board, Piece movedPiece, int destinationIndex) {
         super(board, movedPiece, destinationIndex);
     }

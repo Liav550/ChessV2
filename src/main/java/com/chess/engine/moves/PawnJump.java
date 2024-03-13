@@ -2,6 +2,7 @@ package com.chess.engine.moves;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
+import com.chess.engine.board.Builder;
 import com.chess.engine.pieces.Pawn;
 import com.chess.engine.pieces.Piece;
 
@@ -12,7 +13,7 @@ public final class PawnJump extends Move {
 
     @Override
     public Board execute() {
-        Board.Builder builder = new Board.Builder();
+        Builder builder = new Builder();
         for (Piece piece : board.getCurrentPlayer().getActivePieces()) {
             if (!piece.equals(movedPiece)) {
                 builder.setPiece(piece);

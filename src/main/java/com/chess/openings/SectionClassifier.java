@@ -5,9 +5,6 @@ import com.chess.engine.moves.Move;
 import java.util.Random;
 
 public class SectionClassifier {
-    private SectionClassifier() {
-        throw new RuntimeException("can't instantiate SectionClassifier");
-    }
 
     public static char classify(Move whiteMove, Move blackMove){
         if(whiteMove.toString().equals("e4")){

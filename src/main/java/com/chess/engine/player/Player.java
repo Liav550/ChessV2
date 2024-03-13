@@ -1,5 +1,7 @@
 package com.chess.engine.player;
 
+import com.chess.engine.moves.MoveStatus;
+import com.chess.engine.moves.MoveTransition;
 import com.chess.engine.pieces.Alliance;
 import com.chess.engine.board.Board;
 import com.chess.engine.moves.Move;
@@ -20,10 +22,10 @@ import java.util.List;
  */
 public abstract class Player {
 
-    protected final Board board; // the board that the player plays on.
-    protected final King playerKing; // the king of the player.
-    protected final Collection<Move> legalMoves; // all the legal moves the player has.
-    private final boolean isInCheck; // stores true if the player's king is in check and false otherwise.
+    protected Board board; // the board that the player plays on.
+    protected King playerKing; // the king of the player.
+    protected Collection<Move> legalMoves; // all the legal moves the player has.
+    private boolean isInCheck; // stores true if the player's king is in check and false otherwise.
 
     public Player(Board board, Collection<Move> legalMoves, Collection<Move> opponentLegalMoves){
         this.board = board;
@@ -44,7 +46,7 @@ public abstract class Player {
      *                             legal or not.
      * @return: a collection of all possible castles the player has.
      */
-    protected abstract Collection<Move> calculateKingCastles(Collection<Move> opponentsLegalMoves);
+    public abstract Collection<Move> calculateKingCastles(Collection<Move> opponentsLegalMoves);
     /**
      * @param piecePosition: the position of the tile that is being attacked (if at all).
      * @param opponentLegalMoves: the legal moves of the opponent, because we want to know if the opponent can attack
@@ -125,9 +127,6 @@ public abstract class Player {
 
     public boolean isInStalemate(){
         return !this.isInCheck && !hasLegalEscapeMoves();
-    }
-    public boolean isCastled(){
-        return playerKing.isCastled();
     }
 
 }

@@ -1,18 +1,20 @@
 package com.chess.gui;
 
+import com.chess.FenUtilities;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.moves.Move;
 import com.chess.engine.board.Tile;
 import com.chess.engine.moves.MoveFactory;
 import com.chess.engine.pieces.Piece;
-import com.chess.engine.player.Computer.AlphaBeta;
-import com.chess.engine.player.Computer.MoveStrategy;
-import com.chess.engine.player.GameSetup;
-import com.chess.engine.player.MoveTransition;
+import com.chess.engine.player.MLModel;
+import com.chess.engine.player.MoveStrategy;
+
+import com.chess.engine.moves.MoveTransition;
 import com.chess.engine.player.PlayerType;
 import com.chess.openings.OpeningBook;
 import com.chess.openings.SectionClassifier;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
@@ -32,10 +34,18 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class Table extends Observable {
     private static final String DEFAULT_PIECES_IMAGES_PATH = "piecesIcons/"; // in case we want to use different images in the future
-    private final JFrame gameFrame;
-    private final BoardPanel boardPanel;
-    private boolean openingBook;
-    private final GameSetup gameSetup;
+    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(800,700);
+    private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400,350);
+
+    private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10,10);
+
+    private static final int MAX_THEORY_DEPTH = 12;
+    private static final Color DARK_TILE_COLOR = new Color(150, 75, 0);
+    private static final Color LIGHT_TILE_COLOR = new Color(225, 193, 110);
+    private JFrame gameFrame;
+    private BoardPanel boardPanel;
+    private GameSetup gameSetup;
+    private boolean useOpeningBook;
     private Board chessBoard;
     private Tile sourceTile;
     private Tile destinationTile;
@@ -43,20 +53,14 @@ public class Table extends Observable {
     private Move computerMove;
     private boolean highlightLegals;
     private BoardDirection boardDirection;
-    private final GameHistoryPanel gameHistoryPanel;
-    private final MoveLog moveLog;
-    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(800,700);
-    private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(400,350);
-    private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10,10);
-    private static final Color DARK_TILE_COLOR = new Color(150, 75, 0);
-    private static final Color LIGHT_TILE_COLOR = new Color(225, 193, 110);
-    private static final int MAX_THEORY_DEPTH = 12;
+    private GameHistoryPanel gameHistoryPanel;
+    private MoveLog moveLog;
     private static final Table INSTANCE = new Table();
 
     private Table() {
         this.chessBoard = Board.createStandardBoard();
         this.gameFrame = new JFrame("Chess");
-        this.gameFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.gameFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.gameFrame.setLayout(new BorderLayout());
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
 
@@ -66,7 +70,7 @@ public class Table extends Observable {
         this.moveLog = new MoveLog();
         this.gameFrame.add(gameHistoryPanel,BorderLayout.EAST);
 
-        this.openingBook = false;
+        this.useOpeningBook = false;
 
         this.highlightLegals = false;
 
@@ -95,6 +99,10 @@ public class Table extends Observable {
         return this.gameSetup;
     }
 
+    private boolean useOpeningBook(){
+        return this.useOpeningBook;
+    }
+
     private MoveLog getMoveLog(){
         return this.moveLog;
     }
@@ -104,15 +112,11 @@ public class Table extends Observable {
     private void setGameBoard(Board board) {
         this.chessBoard = board;
     }
-    private void setOpeningBook(boolean useOpeningBook){
-        this.openingBook = useOpeningBook;
+    private void setUseOpeningBook(boolean useOpeningBook){
+        this.useOpeningBook = useOpeningBook;
     }
     private void setComputerMove(Move move){
         this.computerMove = move;
-    }
-
-    private boolean useOpeningBook(){
-        return this.openingBook;
     }
 
     private void updateMoveMade(PlayerType playerType){
@@ -158,7 +162,7 @@ public class Table extends Observable {
         preferencesMenu.add(highLightLegalMovesOption);
 
         JCheckBoxMenuItem useOpeningBook = new JCheckBoxMenuItem("Use Opening Book", false);
-        useOpeningBook.addActionListener(e -> this.openingBook = useOpeningBook.isSelected());
+        useOpeningBook.addActionListener(e -> this.useOpeningBook = useOpeningBook.isSelected());
 
         preferencesMenu.add(useOpeningBook);
         return preferencesMenu;
@@ -181,9 +185,9 @@ public class Table extends Observable {
         notifyObservers(setup);
     }
 
-    class TilePanel extends JPanel{
-        private final int tileId;
-        TilePanel(BoardPanel boardPanel, int tileId){
+    class TilePanel extends JPanel {
+        private int tileId;
+        private TilePanel(BoardPanel boardPanel, int tileId){
             super(new GridBagLayout());
             this.tileId= tileId;
             setPreferredSize(TILE_PANEL_DIMENSION);
@@ -283,26 +287,35 @@ public class Table extends Observable {
         }
         private void highlightLegalMoves(Board board){
             if(highlightLegals){
+                MoveTransition transition;
                 for(Move m: getCurrentPieceLegalMoves(board)){
                     if(m.getDestinationIndex() == this.tileId){
-                        try {
-                            add(new JLabel(new ImageIcon(ImageIO.read(new File("piecesIcons/greenDot.png")))));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        transition = board.getCurrentPlayer().makeMove(m);
+                        if(transition.getMoveStatus().isDone()){
+                            try {
+                                add(new JLabel(new ImageIcon(ImageIO.read(new File("piecesIcons/greenDot.png")))));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
                 }
             }
         }
 
-        private Collection<Move> getCurrentPieceLegalMoves(Board board) {
+        private Iterable<Move> getCurrentPieceLegalMoves(Board board) {
             if(humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == chessBoard.getCurrentPlayer().getAlliance()){
+                if(humanMovedPiece.getPieceType().isKing()){
+                    return Iterables.concat(board.getCurrentPlayer().calculateKingCastles
+                            (board.getCurrentPlayer().getOpponent().getLegalMoves()), humanMovedPiece.calculateLegalMoves(board));
+                }
                 return humanMovedPiece.calculateLegalMoves(board);
             }
+
             return Collections.emptyList();
         }
 
-        public void drawTile(Board board) {
+        private void drawTile(Board board) {
             assignTileColor();
             assignTilePieceIcon(board);
             highlightLegalMoves(board);
@@ -310,10 +323,9 @@ public class Table extends Observable {
             repaint();
         }
     }
-
-    private class BoardPanel extends JPanel{
-        final List<Table.TilePanel> boardTiles;
-        BoardPanel(){
+    class BoardPanel extends JPanel{
+        private List<TilePanel> boardTiles;
+        private BoardPanel(){
             super(new GridLayout(8,8));
 
             this.boardTiles = new ArrayList<>();
@@ -328,7 +340,7 @@ public class Table extends Observable {
             validate();
         }
 
-        public void drawBoard(Board board) {
+        private void drawBoard(Board board) {
             removeAll();
             for(Table.TilePanel tilePanel: boardDirection.traverse(boardTiles)){
                 tilePanel.drawTile(board);
@@ -366,7 +378,7 @@ public class Table extends Observable {
     }
 
     public static class MoveLog{
-        private final List<Move> moves;
+        private List<Move> moves;
         public MoveLog(){
             this.moves = new ArrayList<>();
         }
@@ -375,13 +387,6 @@ public class Table extends Observable {
         public void addMove(Move move){
             this.moves.add(move);
         }
-        public Move removeMove(int index){
-            return this.moves.remove(index);
-        }
-        public boolean removeMove(Move move){
-            return this.moves.remove(move);
-        }
-        public void clear(){this.moves.clear();}
 
         public int size(){
             return this.moves.size();
@@ -415,7 +420,7 @@ public class Table extends Observable {
 
         }
         @Override
-        protected Move doInBackground() throws Exception {
+        protected Move doInBackground() {
             if(Table.getInstance().useOpeningBook() &&
                     Table.getInstance().getMoveLog().getMoves().size() <= MAX_THEORY_DEPTH){
                 OpeningBook openingBook = new OpeningBook();
@@ -438,10 +443,11 @@ public class Table extends Observable {
                     return nextMove;
                 }
                 else {
-                    Table.getInstance().setOpeningBook(false);
+                    Table.getInstance().setUseOpeningBook(false);
                 }
             }
-            MoveStrategy strategy = new AlphaBeta(Table.getInstance().getGameSetup().getSearchDepth());
+            MoveStrategy strategy = new MLModel();
+            System.out.println(FenUtilities.getFENString(Table.getInstance().getChessBoard()));
             Move bestMove = strategy.execute(Table.getInstance().getChessBoard());
             return bestMove;
         }

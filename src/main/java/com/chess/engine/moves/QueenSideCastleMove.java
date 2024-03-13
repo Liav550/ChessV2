@@ -4,10 +4,10 @@ import com.chess.engine.board.Board;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 
-public final class QueenSideCastleMove extends CastleMove {
+public class QueenSideCastleMove extends CastleMove {
     public QueenSideCastleMove(Board board, Piece movedPiece, int destinationIndex,
-                               Rook castleRook, int castleRookStart, int castleRookDestination) {
-        super(board, movedPiece, destinationIndex, castleRook, castleRookStart, castleRookDestination);
+                               Rook rook, int rookStart, int rookDest) {
+        super(board, movedPiece, destinationIndex, rook, rookStart, rookDest);
     }
 
     @Override

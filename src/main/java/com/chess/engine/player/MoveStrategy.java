@@ -1,4 +1,4 @@
-package com.chess.engine.player.Computer;
+package com.chess.engine.player;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.moves.Move;

@@ -19,6 +19,7 @@ import java.util.List;
  * The Rook class represents the rook piece.
  */
 public class Rook extends Piece{
+    private PieceType rookSide;
     private static final int[] CANDIDATE_ROOK_DIRECTION_OFFSETS = {-8,-1,1,8}; // explanation below
           /*
             the directions that a rook can move to.
@@ -26,12 +27,16 @@ public class Rook extends Piece{
                          a rook can go from tile 35 to tile 19 because 35-8-8 = 19
             NOTE: there are some exclusions to this rule, which will be handled
           */
-    public Rook(int piecePosition, Alliance alliance) {
+    public Rook(int piecePosition, Alliance alliance, PieceType rookSide) {
         super(PieceType.ROOK,piecePosition, alliance, true);
+        this.rookSide = rookSide;
     }
-    public Rook(int piecePosition, Alliance alliance, boolean isFirstMove) {
-        super(PieceType.ROOK,piecePosition, alliance, isFirstMove);
+
+    public Rook(int piecePosition, Alliance pieceAlliance, boolean isFirstMove, PieceType rookSide) {
+        super(PieceType.ROOK, piecePosition, pieceAlliance, isFirstMove);
+        this.rookSide = rookSide;
     }
+
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
         int candidateDestinationIndex;
@@ -76,12 +81,9 @@ public class Rook extends Piece{
     }
     @Override
     public Rook movePiece(Move move) {
-        return new Rook(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false);
+        return new Rook(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance(), false, this.rookSide);
     }
-    @Override
-    public int getLocationBonus() {
-        return this.pieceAlliance.rookBonus(this.piecePosition);
-    }
+
 
     private boolean isFirstColumnExclusion(int tileIndex, int offset) { // an exclusion to the rule
                                                                         // that occurs when the rook is in 1st column
@@ -95,6 +97,10 @@ public class Rook extends Piece{
 
         return BoardUtils.isInColumn(tileIndex,7) && offset == 1; // for example- a rook in tile 15
                                                                          // can't go to tile 16
+    }
+
+    public PieceType getRookSide(){
+        return this.rookSide;
     }
     @Override
     public String toString() {

@@ -2,17 +2,17 @@ package com.chess.openings;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.moves.Move;
-import com.chess.pgn.PGNUtilities;
 import com.mongodb.client.*;
 import org.bson.Document;
 
 import java.util.*;
 
+
 public class OpeningBook {
     private static final String PATH = "mongodb://localhost:27017/";
     private static final char[] SECTION_OPTIONS = {'A','B','C','D','E'};
-    private final MongoClient client;
-    private final MongoDatabase db;
+    private MongoClient client;
+    private MongoDatabase db;
     private MongoCollection<Document> currentCollection;
 
     public OpeningBook() {

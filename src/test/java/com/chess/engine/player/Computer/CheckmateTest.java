@@ -3,7 +3,7 @@ package com.chess.engine.player.Computer;
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.moves.MoveFactory;
-import com.chess.engine.player.MoveTransition;
+import com.chess.engine.moves.MoveTransition;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 public class CheckmateTest {

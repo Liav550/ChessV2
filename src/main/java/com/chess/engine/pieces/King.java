@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class King extends Piece{
     private boolean isCastled;
-    private static final int[] CANDIDATE_MOVE_OFFSETS = {-9, -8,-7,-1,1,7,8,9};
+    private static final int[]CANDIDATE_MOVE_OFFSETS = {-9, -8,-7,-1,1,7,8,9} ;
        // that array contains the 8 possible offsets the king can go to from its current position (if possible)
        // for example a king can go from tile 26 to tile 34 because 26+8=34.
        // NOTE: there are some exceptions to this rule, which will be handled
@@ -73,10 +73,6 @@ public class King extends Piece{
                 move.getMovedPiece().getPieceAlliance(),
                 false,
                 move.isCastlingMove());
-    }
-    @Override
-    public int getLocationBonus() {
-        return this.pieceAlliance.kingBonus(this.piecePosition);
     }
     private boolean isFirstColumnExclusion(int tileIndex, int offset){ // an exclusion to the rule
                                                                        // that occurs when the king is in 1st column

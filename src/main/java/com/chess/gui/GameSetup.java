@@ -1,4 +1,7 @@
-package com.chess.engine.player;
+package com.chess.gui;
+
+import com.chess.engine.player.Player;
+import com.chess.engine.player.PlayerType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,8 +54,8 @@ public class GameSetup extends JDialog {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                whitePlayerType = whiteHuman.isSelected()? PlayerType.HUMAN: PlayerType.COMPUTER;
-                blackPlayerType = blackHuman.isSelected()? PlayerType.HUMAN: PlayerType.COMPUTER;
+                whitePlayerType = whiteHuman.isSelected()? PlayerType.HUMAN: PlayerType.AI;
+                blackPlayerType = blackHuman.isSelected()? PlayerType.HUMAN: PlayerType.AI;
                 GameSetup.this.setVisible(false);
             }
         });
@@ -78,28 +81,18 @@ public class GameSetup extends JDialog {
     }
      public boolean isAIPlayer(Player player){
         if(player.getAlliance().isWhite()){
-            return this.whitePlayerType == PlayerType.COMPUTER;
+            return this.whitePlayerType == PlayerType.AI;
         }
-        return this.blackPlayerType == PlayerType.COMPUTER;
+        return this.blackPlayerType == PlayerType.AI;
     }
-
-    PlayerType getWhitePlayerType(){
-        return this.whitePlayerType;
-    }
-    PlayerType getBlackPlayerType(){
-        return this.blackPlayerType;
-    }
-    private static JSpinner addLabeledSpinner(final Container c,
-                                              final String label,
-                                              final SpinnerModel model) {
+    private static JSpinner addLabeledSpinner(Container c,
+                                              String label,
+                                              SpinnerModel model) {
         final JLabel l = new JLabel(label);
         c.add(l);
         final JSpinner spinner = new JSpinner(model);
         l.setLabelFor(spinner);
         c.add(spinner);
         return spinner;
-    }
-    public int getSearchDepth() {
-        return (Integer)this.depthSpinner.getValue();
     }
 }

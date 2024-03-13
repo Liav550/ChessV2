@@ -28,7 +28,7 @@ public abstract class Tile {
         return ImmutableList.copyOf(emptyTiles); // returns an immutable copy of the list
     }
 
-    private Tile(int tileIndex) {
+    Tile(int tileIndex) {
         this.tileIndex = tileIndex;
     }
 
@@ -59,48 +59,4 @@ public abstract class Tile {
     public abstract Piece getPiece();
 
     public int getTileIndex(){return this.tileIndex;}
-
-
-    public static final class EmptyTile extends Tile{
-        private EmptyTile(int tileIndex){
-            super(tileIndex);
-        }
-
-        @Override
-        public boolean isTileOccupied() {
-            return false;
-        }
-
-        @Override
-        public Piece getPiece() {
-            return null;
-        }
-        @Override
-        public String toString(){
-            return "-";
-        }
-    }
-
-
-    public static final class OccupiedTile extends Tile{
-        private final Piece pieceOnTile; // the piece that occupies the tile.
-        private OccupiedTile(int tileIndex, Piece pieceOnTile){
-            super(tileIndex);
-            this.pieceOnTile=pieceOnTile;
-        }
-
-        @Override
-        public boolean isTileOccupied() {
-            return true;
-        }
-
-        @Override
-        public Piece getPiece() {
-            return this.pieceOnTile;
-        }
-        @Override
-        public String toString(){
-            return pieceOnTile.getPieceAlliance().isWhite()? pieceOnTile.toString(): pieceOnTile.toString().toLowerCase();
-        }
-    }
 }

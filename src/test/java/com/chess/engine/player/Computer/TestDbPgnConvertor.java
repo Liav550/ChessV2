@@ -4,9 +4,9 @@ import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
 import com.chess.engine.moves.Move;
 import com.chess.engine.moves.MoveFactory;
-import com.chess.engine.player.MoveTransition;
+import com.chess.engine.moves.MoveTransition;
 import com.chess.gui.Table.MoveLog;
-import com.chess.pgn.PGNUtilities;
+import com.chess.openings.PGNUtilities;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,20 +1,21 @@
 package com.chess.engine.moves;
 
 import com.chess.engine.board.Board;
+import com.chess.engine.board.Builder;
 import com.chess.engine.pieces.Piece;
 import com.chess.engine.pieces.Rook;
 
 public abstract class CastleMove extends Move {
-    protected final Rook castleRook;
-    protected final int castleRookStart;
-    protected final int castleRookDestination;
+    protected Rook castleRook;
+    protected int castleRookStart;
+    protected int castleRookDestination;
 
-    public CastleMove(Board board, Piece movedPiece, int destinationIndex,
-                      Rook castleRook, int castleRookStart, int castleRookDestination) {
-        super(board, movedPiece, destinationIndex);
-        this.castleRook = castleRook;
-        this.castleRookStart = castleRookStart;
-        this.castleRookDestination = castleRookDestination;
+    public CastleMove(Board board, Piece movedPiece, int destination,
+                          Rook rook, int rookStart, int rookDest) {
+        super(board, movedPiece, destination);
+        this.castleRook = rook;
+        this.castleRookStart = rookStart;
+        this.castleRookDestination = rookDest;
     }
 
     public Rook getCastleRook() {
@@ -42,7 +43,7 @@ public abstract class CastleMove extends Move {
 
     @Override
     public Board execute() {
-        Board.Builder builder = new Board.Builder();
+        Builder builder = new Builder();
         for (Piece piece : board.getCurrentPlayer().getActivePieces()) {
             if (!this.movedPiece.equals(piece) && !castleRook.equals(piece)) {
                 builder.setPiece(piece);
@@ -52,7 +53,7 @@ public abstract class CastleMove extends Move {
             builder.setPiece(piece);
         }
         builder.setPiece(this.movedPiece.movePiece(this));
-        builder.setPiece(new Rook(this.castleRookDestination, this.castleRook.getPieceAlliance()));
+        builder.setPiece(new Rook(this.castleRookDestination, this.castleRook.getPieceAlliance(), this.castleRook.getRookSide()));
         builder.setMoveMaker(board.getCurrentPlayer().getOpponent().getAlliance());
         return builder.build();
     }

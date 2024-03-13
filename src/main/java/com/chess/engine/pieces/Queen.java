@@ -99,10 +99,7 @@ public class Queen extends Piece{
     public Queen movePiece(Move move) {
         return new Queen(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
     }
-    @Override
-    public int getLocationBonus() {
-        return this.pieceAlliance.queenBonus(this.piecePosition);
-    }
+
     @Override
     public String toString() {
         return PieceType.QUEEN.toString();

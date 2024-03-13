@@ -1,7 +1,6 @@
-package com.chess.engine.player;
+package com.chess.engine.moves;
 
 import com.chess.engine.board.Board;
-import com.chess.engine.moves.Move;
 
 /**
  * @author liavb
@@ -9,9 +8,9 @@ import com.chess.engine.moves.Move;
  * (since each board is immutable).
  */
 public class MoveTransition {
-    private final Board transitionBoard; // the board we transition into
-    private final Move move;
-    private final MoveStatus moveStatus; // the status on the transition
+    private Board transitionBoard; // the board we transition into
+    private Move move;
+    private MoveStatus moveStatus; // the status on the transition
 
     public MoveTransition(Board transitionBoard, Move move, MoveStatus moveStatus) {
         this.transitionBoard = transitionBoard;

@@ -1,15 +1,16 @@
 package com.chess.engine.moves;
 
 import com.chess.engine.board.Board;
+import com.chess.engine.board.Builder;
 import com.chess.engine.pieces.Piece;
 
 import static com.chess.engine.board.Board.*;
 //TODO DOCUMENT THIS CLASS AT THE END
 public abstract class Move {
-    protected final Board board; // the board in which the move happens
-    protected final Piece movedPiece; // the moved piece
-    protected final int destinationIndex; // the destination in which the piece will land
-    protected final boolean isFirstMove;
+    protected Board board; // the board in which the move happens
+    protected Piece movedPiece; // the moved piece
+    protected int destinationIndex; // the destination in which the piece will land
+    protected boolean isFirstMove;
 
     public static final Move NULL_MOVE = new NullMove();
 
@@ -26,13 +27,15 @@ public abstract class Move {
         this.isFirstMove = false;
     }
 
-    public int getDestinationIndex() {
-        return destinationIndex;
-    }
-
     public Piece getMovedPiece() {
         return movedPiece;
     }
+    public int getDestinationIndex() {
+        return destinationIndex;
+    }
+    public int getCurrentIndex(){return this.movedPiece.getPiecePosition();}
+
+    public Piece getAttackedPiece(){return null;}
 
     public Board execute() {
         Builder builder = new Builder();
@@ -50,8 +53,6 @@ public abstract class Move {
     }
     public boolean isAttack(){return false;}
     public boolean isCastlingMove(){return false;}
-    public Piece getAttackedPiece(){return null;}
-    public int getCurrentIndex(){return this.movedPiece.getPiecePosition();}
     public Board getBoard(){
         return this.board;
     }

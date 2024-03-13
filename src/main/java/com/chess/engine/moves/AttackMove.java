@@ -4,7 +4,7 @@ import com.chess.engine.board.Board;
 import com.chess.engine.pieces.Piece;
 
 public class AttackMove extends Move {
-    private final Piece attackedPiece; // the piece that is being attacked by the moved piece
+    private Piece attackedPiece; // the piece that is being attacked by the moved piece
 
     public AttackMove(Board board, Piece movedPiece, int destinationIndex, Piece attackedPiece) {
         super(board, movedPiece, destinationIndex);

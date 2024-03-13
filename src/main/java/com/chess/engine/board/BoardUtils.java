@@ -1,7 +1,4 @@
 package com.chess.engine.board;
-import com.chess.engine.moves.Move;
-import com.chess.engine.pieces.Piece;
-import com.chess.engine.player.MoveTransition;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -12,7 +9,9 @@ import java.util.*;
  * The BoardUtils class is used for static methods and variables related to the chess board.
  */
 public class BoardUtils {
-    private static final List<String> NOTATION = initializeNotations(); // see the initializeNotations() method below
+    private static final List<String> TILES_NOTATION = initializeNotations(); // see the initializeNotations() method below
+    private static final Map<String,Integer> NOTATION_TO_INDEX = initializeNotationToIndexMap(); // explanation below
+    public static final int NUMBER_OF_TILES = 64; // number of tiles in a standard board
 
     /**
      * @return a list that is being used in order to convert the indexes our program uses (integer form 0 to 63),
@@ -30,8 +29,6 @@ public class BoardUtils {
                 "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"));
     }
 
-    private static final Map<String,Integer> NOTATION_TO_INDEX = initializeNotationToIndexMap(); // explanation below
-
     /**
      * @return: a map that is being used to convert from the official notation names for each tile, to the indexes
      *          that our program can understand.
@@ -39,15 +36,10 @@ public class BoardUtils {
     private static Map<String, Integer> initializeNotationToIndexMap() {
         final Map<String, Integer> positionToCoordinate = new HashMap<>();
         for (int i = 0; i < NUMBER_OF_TILES; i++) {
-            positionToCoordinate.put(initializeNotations().get(i), i); // putting the notation and the index as a pair
+            positionToCoordinate.put(TILES_NOTATION.get(i), i); // putting the notation and the index as a pair
         }
         return ImmutableMap.copyOf(positionToCoordinate);
     }
-
-    private BoardUtils(){ // a constructor that throws an exception if someone tries to instantiate this class.
-        throw new RuntimeException("You can't instantiate BoardUtils!!!");
-    }
-    public static final int NUMBER_OF_TILES = 64; // number of tiles in a standard board
 
     /**
      *
@@ -81,7 +73,7 @@ public class BoardUtils {
      * @return the matching notation for that specific tile.
      */
     public static String getNotationAtIndex(int index) {
-        return NOTATION.get(index);
+        return TILES_NOTATION.get(index);
     }
 
     /**
@@ -94,20 +86,5 @@ public class BoardUtils {
 
     public static boolean isGameOver(Board board) {
         return board.getCurrentPlayer().isInCheckmate() || board.getCurrentPlayer().isInStalemate();
-    }
-
-    public static boolean kingThreat(Move move) {
-        Board board = move.getBoard();
-        MoveTransition transition = board.getCurrentPlayer().makeMove(move);
-        return transition.getTransitionBoard().getCurrentPlayer().isInCheckmate();
-    }
-
-    public static int getMoveValue(Move move) {
-        Piece pieceMoved = move.getMovedPiece();
-        if(move.isAttack()){
-            Piece attackedPiece = move.getAttackedPiece();
-            return attackedPiece.getPieceValue() - pieceMoved.getPieceValue() + Piece.PieceType.KING.getValue();
-        }
-        return -pieceMoved.getPieceValue() + Piece.PieceType.KING.getValue();
     }
 }

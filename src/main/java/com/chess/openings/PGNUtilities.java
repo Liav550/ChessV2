@@ -1,4 +1,4 @@
-package com.chess.pgn;
+package com.chess.openings;
 
 import com.chess.engine.board.Board;
 import com.chess.engine.board.BoardUtils;
@@ -20,11 +20,6 @@ public class PGNUtilities {
     private static final Pattern PLAIN_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)=(.*?)");
     private static final Pattern ATTACK_PAWN_PROMOTION_MOVE = Pattern.compile("(.*?)x(.*?)=(.*?)");
 
-    public static int indexOfNextMove;
-
-    private PGNUtilities(){
-        throw new RuntimeException("You can't instantiate PGNUtilities");
-    }
 
     public static Move createMove(Board board, String pgnString){
         final Matcher kingSideCastleMatcher = KING_SIDE_CASTLE.matcher(pgnString);
@@ -66,7 +61,7 @@ public class PGNUtilities {
             currentIndex = deriveCurrentTileIndex(board, "P", destinationTileNotation, specifier);
             return MoveFactory.createMove(board, currentIndex, destinationIndex);
         }
-        if(pawnPromotionMatcher.matches()){ // todo = could result to an error. check on find() instead of matches()
+        if(pawnPromotionMatcher.matches()){
             destinationTileNotation = pawnPromotionMatcher.group(1);
             destinationIndex = BoardUtils.getIndexFromNotation(destinationTileNotation);
             currentIndex = deriveCurrentTileIndex(board, "P", destinationTileNotation, "");

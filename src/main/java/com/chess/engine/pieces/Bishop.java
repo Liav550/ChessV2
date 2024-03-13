@@ -29,9 +29,6 @@ public class Bishop extends Piece{
     public Bishop(int piecePosition, Alliance alliance) {
         super(PieceType.BISHOP,piecePosition, alliance,true);
     }
-    public Bishop(int piecePosition, Alliance alliance, boolean isFirstMove) {
-        super(PieceType.BISHOP,piecePosition, alliance, isFirstMove);
-    }
     @Override
     public Collection<Move> calculateLegalMoves(Board board) {
         List<Move> legalMoves = new ArrayList<>();
@@ -81,10 +78,7 @@ public class Bishop extends Piece{
         return new Bishop(move.getDestinationIndex(), move.getMovedPiece().getPieceAlliance());
     }
 
-    @Override
-    public int getLocationBonus() {
-        return this.pieceAlliance.bishopBonus(this.piecePosition);
-    }
+
 
     private boolean isFirstColumnExclusion(int tileIndex, int offset){ // an exclusion to the rule
                                                                        // that occurs when the bishop is in 1st column
