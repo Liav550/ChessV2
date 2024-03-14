@@ -1,4 +1,7 @@
-package com.chess.login;
+package com.chess.gui;
+
+import com.chess.login.DBOperations;
+import com.chess.login.GmailHandler;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -12,7 +15,6 @@ public class LoginFrame extends JFrame implements ActionListener {
     private JTextField signInUsernameField;
     private JPasswordField registerPasswordField, confirmPasswordField, signInPasswordField;
     private JButton registerButton, signInButton, forgotPasswordButton;
-    private boolean isRegistering = true; // Flag to track current form
 
     public LoginFrame() {
         super("Login");
@@ -167,8 +169,21 @@ public class LoginFrame extends JFrame implements ActionListener {
 
 
         else if (e.getSource() == signInButton) {
-            DBOperations.signIn(this.signInUsernameField.getText(), String.valueOf(this.signInPasswordField.getPassword()));
-            clear();
+            if(this.signInUsernameField.getText().trim().length() == 0 ||
+            signInPasswordField.getPassword().length == 0){
+                PopupMessage.showErrorMessage("Make sure you fill in all fields",
+                        "Oops. You missed some fields");
+                return;
+            }
+            boolean entered =
+                    DBOperations.signIn(this.signInUsernameField.getText(),
+                            String.valueOf(this.signInPasswordField.getPassword()));
+            if(!entered){
+                clear();
+                return;
+            }
+            WelcomeFrame welcomeFrame = new WelcomeFrame(DBOperations.getUserByName(signInUsernameField.getText()));
+            this.dispose();
         }
         else if (e.getSource() == forgotPasswordButton) {
             System.out.println("FORGOT");

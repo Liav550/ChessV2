@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 @Entity
 @NamedQuery(name = "User.findByUserName",query = "SELECT u FROM UserEntity u WHERE u.userName LIKE ?1")
+@NamedQuery(name = "User.findNameByID", query = "SELECT u.userName FROM UserEntity u WHERE u.userId = ?1")
 @Table(name = "user", schema = "public", catalog = "login")
 public class UserEntity {
     private int userId;

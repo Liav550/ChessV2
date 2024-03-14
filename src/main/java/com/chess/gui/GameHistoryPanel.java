@@ -64,7 +64,7 @@ public class GameHistoryPanel extends JPanel {
         return "";
     }
 
-    public static class DataModel extends DefaultTableModel{
+    public static class DataModel extends DefaultTableModel {
         private List<Row> values;
         private static final String[] NAMES = {"White","Black"};
         private DataModel(){
@@ -129,6 +129,11 @@ public class GameHistoryPanel extends JPanel {
         @Override
         public String getColumnName(int columnIndex){
             return NAMES[columnIndex];
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
         }
     }
     private static class Row {

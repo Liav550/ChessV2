@@ -1,5 +1,7 @@
 package com.chess.login;
 
+import com.chess.gui.LoginFrame;
+import com.chess.gui.PopupMessage;
 import entity.AttemptEntity;
 import entity.PasswordEntity;
 import entity.ResultEntity;
@@ -13,6 +15,7 @@ import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -178,14 +181,14 @@ public class DBOperations {
         return TOTP.getOTP(hexKey);
     }
 
-    public static void signIn(String userName, String identifier){
+    public static boolean signIn(String userName, String identifier){
         UserEntity user = getUserByName(userName);
         if(user == null){
-            return;
+            return false;
         }
         if(isUserBlocked(user)){
             PopupMessage.showErrorMessage("User is blocked! try again later!", "Hold on...");
-            return;
+            return false;
         }
 
         AttemptEntity attempt = new AttemptEntity();
@@ -196,11 +199,13 @@ public class DBOperations {
         if(isValid){
             attempt.setAllowed(true);
             persist(attempt);
+            return true;
         }
 
         else if(getRecentPasswordOfUser(user.getUserId()).getPasswordText().equals(identifier)){
             attempt.setAllowed(true);
             persist(attempt);
+            return true;
         }
         else{
             attempt.setAllowed(false);
@@ -216,50 +221,54 @@ public class DBOperations {
                 if(recent.getTime()-past.getTime() < 15*60*1000){
                     blockUser(user.getUserId());
                     PopupMessage.showErrorMessage("User Blocked for 15 minutes", "A bit sus...");
-                    return;
+                    return false;
                 }
             }
             PopupMessage.showErrorMessage("Entrance was not allowed!", "Hold on...");
+            return false;
         }
     }
 
-    public static void loginGoogleAuthenticator(String userName, String pin){
-        UserEntity user = getUserByName(userName);
-        if(user==null){
-            System.out.println("Something went wrong");
-            return;
-        }
-        if(isUserBlocked(user)){
-            System.out.println("User is blocked! try again later!");
-            return;
+
+    public static Object[][] getTopThreeLeaders(){
+        TypedQuery<Object[]> query = manager.createNamedQuery("Result.getLeaders", Object[].class);
+        query.setMaxResults(3);
+        List<Object[]> topThreeCandidates = query.getResultList();
+
+        List<String> userNames = new ArrayList<>();
+        String userName;
+        for(Object[] o: topThreeCandidates){
+            userName = getUsernameByID((int)(o[0]));
+            userNames.add(userName);
         }
 
-        AttemptEntity attempt = new AttemptEntity();
-        attempt.setDate(new Timestamp(new Date().getTime()));
-        attempt.setUserId(user.getUserId());
-
-        boolean isValid = pin.equals(getTOTPCode(user.getSecretKey()));
-        if(isValid){
-            attempt.setAllowed(true);
-            System.out.println("Login successfully");
-        }
-        else{
-            System.out.println("Enterence was not allowed!");
-            attempt.setAllowed(false);
-            TypedQuery<AttemptEntity> attemptsEntityTypedQuery =
-                    manager.createNamedQuery("Attempt.threeLastEntries",AttemptEntity.class);
-            attemptsEntityTypedQuery.setParameter(1,user.getUserId());
-            attemptsEntityTypedQuery.setMaxResults(3);
-            List<AttemptEntity> attemptsEntityList = attemptsEntityTypedQuery.getResultList();
-            if(attemptsEntityList.size()==3){
-                Timestamp past = attemptsEntityList.get(2).getDate();
-                Timestamp recent = attemptsEntityList.get(0).getDate();
-                if(recent.getTime()-past.getTime() < 15*60*1000){
-                    blockUser(user.getUserId());
-                    System.out.println("User Blocked for 15 minutes");
-                }
-            }
+        Object[][] result = new Object[topThreeCandidates.size()][2];
+        int index = 0;
+        for(String name: userNames){
+            result[index][0] = name;
+            index++;
         }
 
+        index = 0;
+        for(Object[] o: topThreeCandidates){
+            result[index][1] = o[1];
+            index++;
+        }
+
+        return result;
+    }
+
+    private static String getUsernameByID(int id) {
+        TypedQuery<String> query = manager.createNamedQuery("User.findNameByID", String.class);
+        query.setParameter(1, id);
+        String name = query.getSingleResult();
+        return name;
+    }
+
+    public static long getTotalPointsById(int id){
+        TypedQuery<Long> query = manager.createNamedQuery("Result.getTotalPointsById",Long.class);
+        query.setParameter(1, id);
+        List<Long> result = query.getResultList();
+        return result.isEmpty()? 0: result.get(0);
     }
 }

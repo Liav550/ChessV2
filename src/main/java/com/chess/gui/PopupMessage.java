@@ -1,4 +1,4 @@
-package com.chess.login;
+package com.chess.gui;
 
 import javax.swing.*;
 

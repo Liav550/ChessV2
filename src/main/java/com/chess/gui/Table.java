@@ -55,6 +55,8 @@ public class Table extends Observable {
     private BoardDirection boardDirection;
     private GameHistoryPanel gameHistoryPanel;
     private MoveLog moveLog;
+
+    private ClockFrame clock;
     private static final Table INSTANCE = new Table();
 
     private Table() {
@@ -99,6 +101,7 @@ public class Table extends Observable {
         return this.gameSetup;
     }
 
+
     private boolean useOpeningBook(){
         return this.useOpeningBook;
     }
@@ -111,6 +114,9 @@ public class Table extends Observable {
     }
     private void setGameBoard(Board board) {
         this.chessBoard = board;
+    }
+    public void setClock(ClockFrame clock){
+        this.clock = clock;
     }
     private void setUseOpeningBook(boolean useOpeningBook){
         this.useOpeningBook = useOpeningBook;
@@ -227,6 +233,10 @@ public class Table extends Observable {
                             gameHistoryPanel.redo(chessBoard, moveLog);
                             if(gameSetup.isAIPlayer(chessBoard.getCurrentPlayer())){
                                 Table.getInstance().updateMoveMade(PlayerType.HUMAN);
+                                Table.getInstance().clock.startTimer();
+                            }
+                            else{
+                                Table.getInstance().clock.stopTimer();
                             }
                             boardPanel.drawBoard(chessBoard);
                         });

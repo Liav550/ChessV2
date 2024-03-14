@@ -51,13 +51,10 @@ public class GameSetup extends JDialog {
         JButton cancelButton = new JButton("Cancel");
         JButton okButton = new JButton("OK");
 
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                whitePlayerType = whiteHuman.isSelected()? PlayerType.HUMAN: PlayerType.AI;
-                blackPlayerType = blackHuman.isSelected()? PlayerType.HUMAN: PlayerType.AI;
-                GameSetup.this.setVisible(false);
-            }
+        okButton.addActionListener(e -> {
+            whitePlayerType = whiteHuman.isSelected()? PlayerType.HUMAN: PlayerType.AI;
+            blackPlayerType = blackHuman.isSelected()? PlayerType.HUMAN: PlayerType.AI;
+            GameSetup.this.setVisible(false);
         });
 
         cancelButton.addActionListener(new ActionListener() {
