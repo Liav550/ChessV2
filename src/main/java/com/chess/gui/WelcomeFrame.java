@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 public class WelcomeFrame extends JFrame {
     private static final Color GOLD = new Color(211,175,55);
@@ -37,6 +38,8 @@ public class WelcomeFrame extends JFrame {
     }
 
     private JPanel createGameSettingsPanel() {
+        Random random = new Random();
+
         JPanel gameSettingsPanel = new JPanel();
         gameSettingsPanel.setBackground(Color.RED);
         gameSettingsPanel.setLayout(new BoxLayout(gameSettingsPanel, BoxLayout.Y_AXIS));
@@ -55,6 +58,11 @@ public class WelcomeFrame extends JFrame {
             dispose();
             Table table = Table.getInstance();
             ClockFrame clock = new ClockFrame((int)spinner.getValue());
+
+            boolean boardDirection = random.nextBoolean();
+            Table.BoardDirection direction = boardDirection? Table.BoardDirection.NORMAL: Table.BoardDirection.FLIPPED;
+            table.setBoardDirection(direction);
+
             table.setClock(clock);
             clock.startTimer();
         });

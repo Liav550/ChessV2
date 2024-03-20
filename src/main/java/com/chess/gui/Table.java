@@ -76,8 +76,8 @@ public class Table extends Observable {
 
         this.highlightLegals = false;
 
-        JMenuBar tableMenuBar = createTableMenuBar();
-        this.gameFrame.setJMenuBar(tableMenuBar);
+        //JMenuBar tableMenuBar = createTableMenuBar();
+        //this.gameFrame.setJMenuBar(tableMenuBar);
 
         this.boardPanel = new BoardPanel();
         this.gameFrame.add(boardPanel,BorderLayout.CENTER);
@@ -112,11 +112,16 @@ public class Table extends Observable {
     private GameHistoryPanel getGameHistoryPanel(){
         return this.gameHistoryPanel;
     }
+
     private void setGameBoard(Board board) {
         this.chessBoard = board;
     }
     public void setClock(ClockFrame clock){
         this.clock = clock;
+    }
+    public void setBoardDirection(BoardDirection direction){
+        this.boardDirection = direction;
+        boardPanel.drawBoard(chessBoard);
     }
     private void setUseOpeningBook(boolean useOpeningBook){
         this.useOpeningBook = useOpeningBook;

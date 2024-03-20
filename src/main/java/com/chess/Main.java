@@ -1,13 +1,7 @@
 package com.chess;
-
-
-
-
-import com.chess.gui.ClockFrame;
 import com.chess.gui.LoginFrame;
 import com.chess.gui.Table;
-import com.chess.gui.WelcomeFrame;
-import entity.UserEntity;
+
 
 import javax.mail.*;
 
